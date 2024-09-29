@@ -16,33 +16,37 @@
 
         // Play audio
         function playAudio() {
+            console.log("playAudio called");
             audio.play();
-            window.location.href = 'uniwebview://audioState?state=playing';
+            window.uniwebview.sendMessage('audioState', { state: 'playing' });
         }
 
         // Pause audio
         function pauseAudio() {
+            console.log("pauseAudio called");
             audio.pause();
-            window.location.href = 'uniwebview://audioState?state=paused';
+            window.uniwebview.sendMessage('audioState', { state: 'paused' });
         }
 
         // Seek forward
         function seekForward() {
+            console.log("seekForward called");
             audio.currentTime += 15;
-            window.location.href = 'uniwebview://seek?currentTime=' + audio.currentTime;
+            window.uniwebview.sendMessage('seek', { currentTime: audio.currentTime });
         }
 
         // Seek backward
         function seekBackward() {
+            console.log("seekBackward called");
             audio.currentTime -= 15;
-            window.location.href = 'uniwebview://seek?currentTime=' + audio.currentTime;
+            window.uniwebview.sendMessage('seek', { currentTime: audio.currentTime });
         }
 
         // Get current time and duration
         function getAudioInfo() {
             let duration = audio.duration;
             let currentTime = audio.currentTime;
-            window.location.href = 'uniwebview://audioInfo?currentTime=' + currentTime + '&duration=' + duration;
+            window.uniwebview.sendMessage('audioInfo', { currentTime: currentTime, duration: duration });
         }
 
         // Load new audio file
