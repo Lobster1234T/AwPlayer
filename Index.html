@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Player</title>
+</head>
+<body>
+    <audio id="audioPlayer" controls>
+        <source id="audioSource" src="" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        const audio = document.getElementById('audioPlayer');
+
+        // Play audio
+        function playAudio() {
+            audio.play();
+            window.location.href = 'uniwebview://audioState?state=playing';
+        }
+
+        // Pause audio
+        function pauseAudio() {
+            audio.pause();
+            window.location.href = 'uniwebview://audioState?state=paused';
+        }
+
+        // Seek forward
+        function seekForward() {
+            audio.currentTime += 15;
+            window.location.href = 'uniwebview://seek?currentTime=' + audio.currentTime;
+        }
+
+        // Seek backward
+        function seekBackward() {
+            audio.currentTime -= 15;
+            window.location.href = 'uniwebview://seek?currentTime=' + audio.currentTime;
+        }
+
+        // Get current time and duration
+        function getAudioInfo() {
+            let duration = audio.duration;
+            let currentTime = audio.currentTime;
+            window.location.href = 'uniwebview://audioInfo?currentTime=' + currentTime + '&duration=' + duration;
+        }
+
+        // Load new audio file
+        function loadAudio(url) {
+            const source = document.getElementById('audioSource');
+            source.src = url;
+            audio.load();
+        }
+
+        // Update current time every second
+        setInterval(getAudioInfo, 1000);
+    </script>
+</body>
+</html>
