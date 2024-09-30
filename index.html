@@ -41,6 +41,30 @@
             window.location.href = `uniwebview://audio?state=0`; // Пауза
         }
 
+        function seekForward() {
+            if (audio.duration > 0) {
+                audio.currentTime = Math.min(audio.currentTime + 15, audio.duration);
+                sendSeekInfo();
+            }
+        }
+
+        function seekBackward() {
+            if (audio.duration > 0) {
+                audio.currentTime = Math.max(audio.currentTime - 15, 0);
+                sendSeekInfo();
+            }
+        }
+
+        function sendAudioInfo() {
+            let duration = audio.duration || 0;
+            let currentTime = audio.currentTime || 0;
+            window.location.href = `uniwebview://audio?currentTime=${currentTime}&duration=${duration}`;
+        }
+
+
+
+        setInterval(sendAudioInfo, 1000); 
+
         document.addEventListener('click', playPauseAudio);
     </script>
 </body>
