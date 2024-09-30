@@ -4,19 +4,22 @@
     <meta charset="UTF-8">
     <title>UniWebView TextMeshPro Demo</title>
     <script>
-        function sendMessageToUnity() {
-            // Отправляем сообщение в Unity
-            window.uniWebView.sendMessage({
-                path: 'messageFromHTML',
-                args: {
-                    message: 'Hello from HTML!'
-                }
+        document.addEventListener('DOMContentLoaded', function() {
+            const sendButton = document.getElementById('sendMessageButton');
+            sendButton.addEventListener('click', function() {
+                // Отправляем сообщение в Unity
+                window.uniWebView.sendMessage({
+                    path: 'messageFromHTML',
+                    args: {
+                        message: 'Hello from HTML!'
+                    }
+                });
             });
-        }
+        });
     </script>
 </head>
 <body>
     <h1>UniWebView Demo</h1>
-    <button onclick="sendMessageToUnity()">Send Message</button>
+    <button id="sendMessageButton">Send Message</button>
 </body>
 </html>
