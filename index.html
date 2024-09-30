@@ -7,16 +7,12 @@
     <style>
         body {
             background-color: rgba(0, 0, 0, 0); 
-            color: transparent; 
             margin: 0; 
             padding: 0; 
             cursor: pointer; 
             overflow: hidden; 
             width: 100vw;
             height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
     </style>
 </head>
@@ -38,30 +34,14 @@
 
         function playAudio() {
             audio.play();
-            window.location.href = `uniwebview://audio?state=1`; // Сообщаем о состоянии "воспроизведение"
+            window.location.href = `uniwebview://audio?state=1`; // Воспроизведение
         }
 
         function pauseAudio() {
             audio.pause();
-            window.location.href = `uniwebview://audio?state=0`; // Сообщаем о состоянии "пауза"
+            window.location.href = `uniwebview://audio?state=0`; // Пауза
         }
 
-        function sendAudioInfo() {
-            let duration = audio.duration || 0;
-            let currentTime = audio.currentTime || 0;
-            uniWebView.sendMessage({
-                path: 'audioInfo',
-                args: {
-                    currentTime: currentTime.toString(),
-                    duration: duration.toString()
-                }
-            });
-        }
-
-        // Каждую секунду отправляем информацию о текущем времени
-        setInterval(sendAudioInfo, 1000); 
-
-        // Обрабатываем клики по всей странице
         document.addEventListener('click', playPauseAudio);
     </script>
 </body>
