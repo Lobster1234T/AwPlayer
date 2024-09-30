@@ -6,15 +6,11 @@
     <style>
         body {
             background-color: rgba(0, 0, 0, 0); /* Полностью прозрачный фон */
-            color: white;
-            text-align: center;
-            font-family: Arial, sans-serif;
+            color: transparent; /* Скрыть текст */
             margin: 0; /* Убираем отступы */
             padding: 0; /* Убираем внутренние отступы */
             cursor: pointer; /* Изменяем курсор на указатель */
-        }
-        #audioPlayer {
-            display: none; /* Скрываем стандартный аудиоплеер */
+            overflow: hidden; /* Убираем прокрутку, если есть */
         }
     </style>
 </head>
@@ -22,11 +18,7 @@
     <audio id="audioPlayer">
         <source id="audioSource" src="https://krutov89bk.online/kolibelnie/stories/20.Sneaky%20Hyena%20and%20the%20Teachers'%20Day%20Camp.mp3" type="audio/mpeg">
     </audio>
-    
-    <div style="margin-top: 20px;">
-        <span id="currentTime">00:00</span> / <span id="duration">00:00</span>
-    </div>
-    
+
     <script>
         const audio = document.getElementById('audioPlayer');
         const currentTimeDisplay = document.getElementById('currentTime');
@@ -38,7 +30,7 @@
         };
 
         audio.ontimeupdate = function() {
-            currentTimeDisplay.textContent = formatTime(audio.currentTime);
+            sendAudioInfo(); // Убедитесь, что информация отправляется при обновлении времени
         };
 
         function formatTime(seconds) {
@@ -86,6 +78,7 @@
             source.src = url;
             audio.load();
             audio.play();
+            sendAudioState('playing'); // Отправляем состояние воспроизведения
             console.log("Audio loaded and playing: " + url);
         }
 
@@ -119,10 +112,10 @@
             });
         }
 
+        setInterval(sendAudioInfo, 1000); // Отправляем информацию о аудио каждую секунду
+
         // Добавляем обработчик события для клика на документе
         document.addEventListener('click', playPauseAudio);
-
-        setInterval(sendAudioInfo, 1000);
     </script>
 </body>
 </html>
