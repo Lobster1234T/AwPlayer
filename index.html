@@ -39,20 +39,19 @@
     </div>
 
     <script>
-        let clickCount = 0;
+let clickCount = 0;
 
-        function sendMessage() {
-            clickCount++;
-            let message = {
-                path: 'UpdateClickCount',
-                demo: {'Количество кликов: ' + clickCount
-                }
-            };
-            // Отправляем сообщение в Unity
-            if (window.uniWebView) {
-                window.uniWebView.postMessage(JSON.stringify(message));
-            }
-        }
-    </script>
+function sendMessage() {
+    clickCount++;
+    let message = {
+        path: 'UpdateClickCount',
+        demo: 'Количество кликов: ' + clickCount
+    };
+    // Отправляем сообщение в Unity
+    if (window.uniWebView) {
+        window.uniWebView.postMessage(JSON.stringify(message));
+    }
+}
+</script>
 </body>
 </html>
