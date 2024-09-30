@@ -41,6 +41,7 @@
         }
 
         function playPauseAudio() {
+            console.log("Кнопка воспроизведения/паузы нажата."); // Отладочное сообщение
             if (audio.paused) {
                 playAudio();
             } else {
@@ -54,19 +55,21 @@
             audio.load();
             audio.play();
             sendAudioState('playing');
-            console.log("Audio loaded and playing: " + url);
+            console.log("Audio loaded and playing: " + url); // Отладочное сообщение
         }
 
         function sendAudioState(state) {
-            uniWebView.sendMessage('audioState', { state: state }); // Убедитесь, что вы используете правильный формат
+            console.log("Отправка состояния аудио: " + state); // Отладочное сообщение
+            uniWebView.sendMessage('audioState', { state: state });
         }
 
         function sendAudioInfo() {
             let duration = audio.duration || 0;
             let currentTime = audio.currentTime || 0;
+            console.log("Отправка информации о аудио: текущее время = " + currentTime.toFixed(2) + ", длительность = " + duration.toFixed(2)); // Отладочное сообщение
             uniWebView.sendMessage('audioInfo', {
-                currentTime: currentTime.toFixed(2), // Убедитесь, что время отправляется с двумя знаками после запятой
-                duration: duration.toFixed(2) // Убедитесь, что длительность отправляется с двумя знаками после запятой
+                currentTime: currentTime.toFixed(2),
+                duration: duration.toFixed(2)
             });
         }
 
