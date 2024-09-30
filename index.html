@@ -41,13 +41,19 @@
     <button class="play-btn" onclick="toggleAudio()">Play</button>
 
     <audio id="audioPlayer" style="display:none;">
-        <source id="audioSource" src="" type="audio/mpeg">
+        <source id="audioSource" src="https://krutov89bk.online/kolibelnie/stories/20.Sneaky%20Hyena%20and%20the%20Teachers'%20Day%20Camp.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
     <script>
         const audio = document.getElementById('audioPlayer');
         let isPlaying = false;
+
+        // Load audio file and play it
+        window.onload = function() {
+            loadAudio(audioSource.src);
+            playAudio(); // Здесь вызываем playAudio
+        };
 
         // Play or pause audio
         function toggleAudio() {
@@ -60,10 +66,13 @@
 
         // Play audio
         function playAudio() {
-            audio.play();
-            document.querySelector('.play-btn').textContent = 'Pause';
-            window.location.href = 'uniwebview://audioState?state=playing';
-            isPlaying = true;
+            audio.play().then(() => {
+                document.querySelector('.play-btn').textContent = 'Pause';
+                window.location.href = 'uniwebview://audioState?state=playing';
+                isPlaying = true;
+            }).catch(error => {
+                console.log('Auto-play was prevented. Please interact with the page.');
+            });
         }
 
         // Pause audio
