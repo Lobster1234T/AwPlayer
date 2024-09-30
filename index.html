@@ -6,11 +6,9 @@
     <style>
         body {
             background-color: rgba(0, 0, 0, 0); /* Полностью прозрачный фон */
-            color: transparent; /* Скрыть текст */
-            margin: 0; /* Убираем отступы */
-            padding: 0; /* Убираем внутренние отступы */
-            cursor: pointer; /* Изменяем курсор на указатель */
-            overflow: hidden; /* Убираем прокрутку, если есть */
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
         }
     </style>
 </head>
@@ -22,82 +20,39 @@
     <script>
         const audio = document.getElementById('audioPlayer');
 
-        audio.onloadedmetadata = function() {
-            href.log('Audio loaded metadata');
-            sendAudioInfo(); // Отправляем информацию при загрузке метаданных
-        };
-
-        audio.ontimeupdate = function() {
-            href.log('Audio time updated');
-            sendAudioInfo(); // Отправляем информацию при обновлении времени
-        };
-
+        // Функция для воспроизведения аудио
         function playAudio() {
             audio.play();
-            href.log('Audio playing');
             sendAudioState('playing');
         }
 
+        // Функция для паузы аудио
         function pauseAudio() {
             audio.pause();
-            href.log('Audio paused');
             sendAudioState('paused');
         }
 
-        function playPauseAudio() {
-            href.log('Play/Pause button clicked');
-            if (audio.paused) {
-                playAudio();
-            } else {
-                pauseAudio();
-            }
-        }
-
-        function loadAudio(url) {
-            const source = document.getElementById('audioSource');
-            source.src = url;
-            audio.load();
-            audio.play();
-            href.log('Audio loaded and started playing: ' + url);
-            sendAudioState('playing');
-        }
-
-        function sendAudioState(state) {
-            href.log('Audio state: ' + state);
-        }
-
+        // Функция для обновления аудио информации
         function sendAudioInfo() {
             let duration = audio.duration || 0;
             let currentTime = audio.currentTime || 0;
-            href.log('Audio info - Current time: ' + currentTime.toFixed(2) + ', Duration: ' + duration.toFixed(2));
+            uniWebView.sendMessage('ReceiveAudioInfo', JSON.stringify({
+                currentTime: currentTime.toFixed(2),
+                duration: duration.toFixed(2)
+            }));
         }
 
-        function seekForward() {
-            if (audio.duration > 0) {
-                audio.currentTime = Math.min(audio.currentTime + 15, audio.duration);
-                href.log('Seeked forward');
-                sendAudioInfo();
-            }
+        // Функция для отправки состояния аудио
+        function sendAudioState(state) {
+            uniWebView.sendMessage('ReceiveAudioState', JSON.stringify({ state: state }));
         }
 
-        function seekBackward() {
-            if (audio.duration > 0) {
-                audio.currentTime = Math.max(audio.currentTime - 15, 0);
-                href.log('Seeked backward');
-                sendAudioInfo();
-            }
-        }
+        // Обновление информации каждые 2 секунды
+        setInterval(sendAudioInfo, 2000);
 
-        setInterval(sendAudioInfo, 1000); // Отправляем информацию о аудио каждую секунду
-
-        // Добавляем обработчик события для клика на документе
-        document.addEventListener('click', playPauseAudio);
-
-        const href = {
-            log: function(message) {
-                console.log('[href log] ' + message);
-            }
-        };
+        // Обработка метаданных и изменений времени
+        audio.onloadedmetadata = sendAudioInfo;
+        audio.ontimeupdate = sendAudioInfo;
     </script>
 </body>
 </html>
