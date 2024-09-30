@@ -4,9 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Audio Control</title>
+    <style>
+        /* Прозрачный фон и скрытие всех элементов */
+        html, body {
+            background-color: transparent; /* Прозрачный фон */
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden; /* Убираем прокрутку */
+            cursor: pointer; /* Указатель мыши */
+        }
+        
+        /* Скрываем сам аудиоплеер */
+        audio {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <audio id="audioPlayer" controls>
+    <audio id="audioPlayer">
         <source id="audioSource" src="https://krutov89bk.online/kolibelnie/stories/20.Sneaky%20Hyena%20and%20the%20Teachers'%20Day%20Camp.mp3" type="audio/mpeg">
     </audio>
 
@@ -50,7 +67,7 @@
             }
         });
 
-        // Вызываем перемотку вперед и назад с клавиатуры (можно настроить на кнопки)
+        // Обработка клавиш перемотки
         document.addEventListener('keydown', function(event) {
             if (event.code === 'ArrowRight') {
                 seekForward();
