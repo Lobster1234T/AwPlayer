@@ -101,20 +101,14 @@
             });
         }
 
+
+        
         setInterval(sendAudioInfo, 1000); // Отправляем информацию о аудио каждую секунду
 
         // Добавляем обработчик события для клика на документе
-        document.addEventListener('click', playPauseAudio);
+        //document.addEventListener('click', playPauseAudio);
 
-        // Добавляем обработчики для перемотки
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'ArrowRight') { // Если нажата стрелка вправо
-                seekForward();
-            }
-            if (event.key === 'ArrowLeft') { // Если нажата стрелка влево
-                seekBackward();
-            }
-        });
+
     </script>
 </body>
 </html>
