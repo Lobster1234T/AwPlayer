@@ -5,11 +5,14 @@
     <title>Audio Player Test</title>
     <style>
         body {
-            background-color: black;
+            background-color: rgba(0, 0, 0, 0); /* Прозрачный фон */
             color: white;
             text-align: center;
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
+
         .button {
             background-color: #444;
             border: none;
@@ -17,94 +20,69 @@
             padding: 15px 20px;
             text-align: center;
             text-decoration: none;
-            margin: 4px 2px;
+            margin: 10px;
             cursor: pointer;
             font-size: 16px;
+            display: inline-block;
         }
+
         .button:hover {
             background-color: #666;
         }
+
         #audioPlayer {
-            display: none; /* Скрываем стандартный аудиоплеер */
+            display: none; /* Прячем стандартный аудиоплеер */
+        }
+
+        .controls {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
     </style>
 </head>
 <body>
-    <h1>Test Audio Player</h1>
+    <!-- Кнопки управления аудио -->
+    <div class="controls">
+        <button class="button" onclick="seekBackward()">&#9664;&#9664; Назад 15 сек</button>
+        <button class="button" onclick="playPauseAudio()" id="playPauseButton">Play</button>
+        <button class="button" onclick="seekForward()">Вперед 15 сек &#9654;&#9654;</button>
+    </div>
+
     <audio id="audioPlayer">
         <source id="audioSource" src="https://krutov89bk.online/kolibelnie/stories/20.Sneaky%20Hyena%20and%20the%20Teachers'%20Day%20Camp.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
-    
-    <!-- Убрана кнопка Play -->
-    
-    <!-- Отображение текущего времени и продолжительности -->
-    <div style="margin-top: 20px;">
-        <span id="currentTime">00:00</span> / <span id="duration">00:00</span>
-    </div>
-    
+
     <script>
         const audio = document.getElementById('audioPlayer');
-        const currentTimeDisplay = document.getElementById('currentTime');
-        const durationDisplay = document.getElementById('duration');
+        const playPauseButton = document.getElementById('playPauseButton');
 
-        // Загрузка метаданных аудио
-        audio.onloadedmetadata = function() {
-            durationDisplay.textContent = formatTime(audio.duration);
-            sendAudioInfo();
-        };
-
-        // Обновляем текущее время
-        audio.ontimeupdate = function() {
-            currentTimeDisplay.textContent = formatTime(audio.currentTime);
-        };
-
-        // Форматирование времени
-        function formatTime(seconds) {
-            let minutes = Math.floor(seconds / 60);
-            let secs = Math.floor(seconds % 60);
-            if (secs < 10) secs = '0' + secs;
-            if (minutes < 10) minutes = '0' + minutes;
-            return minutes + ':' + secs;
+        // Воспроизведение или пауза аудио
+        function playPauseAudio() {
+            if (audio.paused) {
+                audio.play();
+                playPauseButton.textContent = 'Pause';
+            } else {
+                audio.pause();
+                playPauseButton.textContent = 'Play';
+            }
         }
 
-        // Функция для запуска воспроизведения из Unity
-        function playAudio() {
-            audio.play();
-            sendAudioState('playing');
+        // Перемотка вперед
+        function seekForward() {
+            if (audio.duration > 0) {
+                audio.currentTime = Math.min(audio.currentTime + 15, audio.duration);
+            }
         }
 
-        // Остановка воспроизведения
-        function pauseAudio() {
-            audio.pause();
-            sendAudioState('paused');
+        // Перемотка назад
+        function seekBackward() {
+            if (audio.duration > 0) {
+                audio.currentTime = Math.max(audio.currentTime - 15, 0);
+            }
         }
-
-        // Отправка статуса аудио в Unity
-        function sendAudioState(state) {
-            uniWebView.sendMessage({
-                path: 'audioState',
-                args: {
-                    state: state
-                }
-            });
-        }
-
-        // Отправка текущего времени и продолжительности в Unity
-        function sendAudioInfo() {
-            let duration = audio.duration || 0;
-            let currentTime = audio.currentTime || 0;
-            uniWebView.sendMessage({
-                path: 'audioInfo',
-                args: {
-                    currentTime: currentTime.toString(),
-                    duration: duration.toString()
-                }
-            });
-        }
-
-        // Обновление информации каждую секунду
-        setInterval(sendAudioInfo, 1000);
     </script>
 </body>
 </html>
