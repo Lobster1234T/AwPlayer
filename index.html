@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Audio Player</title>
     <style>
         body {
@@ -10,11 +11,12 @@
             margin: 0; 
             padding: 0; 
             cursor: pointer; 
-            overflow: hidden;
-        }
-        a {
-            color: transparent; /* Ссылки также прозрачные */
-            text-decoration: none; /* Убираем подчеркивание ссылок */
+            overflow: hidden; 
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     </style>
 </head>
@@ -23,42 +25,8 @@
         <source id="audioSource" src="https://krutov89bk.online/kolibelnie/stories/20.Sneaky%20Hyena%20and%20the%20Teachers'%20Day%20Camp.mp3" type="audio/mpeg">
     </audio>
 
-    <a href="javascript:playAudio()">playAudio</a>
-    <a href="javascript:pauseAudio()">pauseAudio</a>
-
-    <a href="myscheme://action">Click Me</a>
-
     <script>
         const audio = document.getElementById('audioPlayer');
-        const currentTimeDisplay = document.getElementById('currentTime');
-        const durationDisplay = document.getElementById('duration');
-
-        audio.onloadedmetadata = function() {
-            durationDisplay.textContent = formatTime(audio.duration);
-            sendAudioInfo();
-        };
-
-        audio.ontimeupdate = function() {
-            sendAudioInfo(); 
-        };
-
-        function formatTime(seconds) {
-            let minutes = Math.floor(seconds / 60);
-            let secs = Math.floor(seconds % 60);
-            if (secs < 10) secs = '0' + secs;
-            if (minutes < 10) minutes = '0' + minutes;
-            return minutes + ':' + secs;
-        }
-
-        function playAudio() {
-            audio.play();
-            window.location.href = `uniwebview://audio?state=1`; 
-        }
-
-        function pauseAudio() {
-            audio.pause();
-            window.location.href = `uniwebview://audio?state=0`; 
-        }
 
         function playPauseAudio() {
             if (audio.paused) {
@@ -68,36 +36,14 @@
             }
         }
 
-        function seekForward() {
-            if (audio.duration > 0) {
-                audio.currentTime = Math.min(audio.currentTime + 15, audio.duration);
-                sendSeekInfo();
-            }
-        }
-
-        function seekBackward() {
-            if (audio.duration > 0) {
-                audio.currentTime = Math.max(audio.currentTime - 15, 0);
-                sendSeekInfo();
-            }
-        }
-
-        function loadAudio(url) {
-            const source = document.getElementById('audioSource');
-            source.src = url;
-            audio.load();
+        function playAudio() {
             audio.play();
-            sendAudioState('playing');
-            console.log("Audio loaded and playing: " + url);
+            window.location.href = `uniwebview://audio?state=1`; // Сообщаем о состоянии "воспроизведение"
         }
 
-        function sendAudioState(state) {
-            uniWebView.sendMessage({
-                path: 'audioState',
-                args: {
-                    state: state
-                }
-            });
+        function pauseAudio() {
+            audio.pause();
+            window.location.href = `uniwebview://audio?state=0`; // Сообщаем о состоянии "пауза"
         }
 
         function sendAudioInfo() {
@@ -112,16 +58,10 @@
             });
         }
 
-        function sendSeekInfo() {
-            uniWebView.sendMessage({
-                path: 'seek',
-                args: {
-                    currentTime: audio.currentTime.toString()
-                }
-            });
-        }
-
+        // Каждую секунду отправляем информацию о текущем времени
         setInterval(sendAudioInfo, 1000); 
+
+        // Обрабатываем клики по всей странице
         document.addEventListener('click', playPauseAudio);
     </script>
 </body>
