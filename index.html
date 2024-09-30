@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Audio Player Test</title>
 </head>
-<body>
+<body onload="playAudio()">
     <h1>Test Audio Player</h1>
-    <audio id="audioPlayer" controls>
+    <audio id="audioPlayer" controls autoplay>
         <source id="audioSource" src="https://krutov89bk.online/kolibelnie/stories/20.Sneaky%20Hyena%20and%20the%20Teachers'%20Day%20Camp.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
@@ -18,8 +18,11 @@
         // Play audio
         function playAudio() {
             if (audio.src) {
-                audio.play();
-                console.log("Playing audio");
+                audio.play().then(() => {
+                    console.log("Audio is playing");
+                }).catch(error => {
+                    console.log("Auto-play was prevented:", error);
+                });
             } else {
                 console.log("Audio source is empty. Load the audio first.");
             }
