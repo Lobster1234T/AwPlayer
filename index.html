@@ -3,14 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Audio Player</title>
-
+    <style>
+        body {
+            background-color: transparent; /* Прозрачный фон */
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
 </head>
 <body>
-    style="background-color: transparent"
-
+    <!-- Аудиоплеер -->
     <audio id="audioPlayer">
         <source id="audioSource" src="https://krutov89bk.online/kolibelnie/stories/20.Sneaky%20Hyena%20and%20the%20Teachers'%20Day%20Camp.mp3" type="audio/mpeg">
     </audio>
+
+    <!-- Добавляем элементы для отображения текущего времени и продолжительности -->
+    <div>
+        <span id="currentTime">00:00</span> / <span id="duration">00:00</span>
+    </div>
 
     <script>
         const audio = document.getElementById('audioPlayer');
@@ -18,12 +29,13 @@
         const durationDisplay = document.getElementById('duration');
 
         audio.onloadedmetadata = function() {
-            durationDisplay.textContent = formatTime(audio.duration);
+            durationDisplay.textContent = formatTime(audio.duration); // Отображаем продолжительность
             sendAudioInfo();
         };
 
         audio.ontimeupdate = function() {
-            sendAudioInfo(); // Убедитесь, что информация отправляется при обновлении времени
+            currentTimeDisplay.textContent = formatTime(audio.currentTime); // Обновляем текущее время
+            sendAudioInfo(); // Отправляем информацию при обновлении времени
         };
 
         function formatTime(seconds) {
@@ -76,38 +88,46 @@
         }
 
         function sendAudioState(state) {
-            uniWebView.sendMessage({
-                path: 'audioState',
-                args: {
-                    state: state
-                }
-            });
+            if (typeof uniWebView !== 'undefined') {
+                uniWebView.sendMessage({
+                    path: 'audioState',
+                    args: {
+                        state: state
+                    }
+                });
+            } else {
+                console.log("Audio state: " + state); // Для тестирования без uniWebView
+            }
         }
 
         function sendAudioInfo() {
             let duration = audio.duration || 0;
             let currentTime = audio.currentTime || 0;
-            uniWebView.sendMessage({
-                path: 'audioInfo',
-                args: {
-                    currentTime: currentTime.toString(),
-                    duration: duration.toString()
-                }
-            });
+            if (typeof uniWebView !== 'undefined') {
+                uniWebView.sendMessage({
+                    path: 'audioInfo',
+                    args: {
+                        currentTime: currentTime.toFixed(2),
+                        duration: duration.toFixed(2)
+                    }
+                });
+            } else {
+                console.log("Audio info: Current Time - " + currentTime.toFixed(2) + ", Duration - " + duration.toFixed(2));
+            }
         }
 
         function sendSeekInfo() {
-            uniWebView.sendMessage({
-                path: 'seek',
-                args: {
-                    currentTime: audio.currentTime.toString()
-                }
-            });
+            if (typeof uniWebView !== 'undefined') {
+                uniWebView.sendMessage({
+                    path: 'seek',
+                    args: {
+                        currentTime: audio.currentTime.toFixed(2)
+                    }
+                });
+            } else {
+                console.log("Seek to: " + audio.currentTime.toFixed(2));
+            }
         }
-
-body {
-  background-color: transparent;
-}
 
         setInterval(sendAudioInfo, 1000); // Отправляем информацию о аудио каждую секунду
 
