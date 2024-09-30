@@ -2,52 +2,123 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clicker Demo</title>
+    <title>Audio Player</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            text-align: center;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 18px;
-            cursor: pointer;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-        }
-        button:hover {
-            background-color: #218838;
+            background-color: rgba(0, 0, 0, 0); 
+            color: transparent; 
+            margin: 0; 
+            padding: 0; 
+            cursor: pointer; 
+            overflow: hidden; 
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Clicker Demo</h1>
-        <p>Нажмите на кнопку, чтобы увеличить количество кликов:</p>
-        <button onclick="sendClick()">Клик</button>
-    </div>
+    <audio id="audioPlayer">
+        <source id="audioSource" src="https://krutov89bk.online/kolibelnie/stories/20.Sneaky%20Hyena%20and%20the%20Teachers'%20Day%20Camp.mp3" type="audio/mpeg">
+    </audio>
+
+    <a href="javascript:playAudio()">playAudio</a>
+    <a href="javascript:pauseAudio()">pauseAudio</a>
+
+     <a href="myscheme://action">Click Me</a>
 
     <script>
-        let clickCount = 0;
+        const audio = document.getElementById('audioPlayer');
+        const currentTimeDisplay = document.getElementById('currentTime');
+        const durationDisplay = document.getElementById('duration');
 
-        function sendClick() {
-            clickCount++;
-            // Отправляем количество кликов в Unity через схему uniwebview
-            window.location.href = `uniwebview://Click?count=${clickCount}`;
+        audio.onloadedmetadata = function() {
+            durationDisplay.textContent = formatTime(audio.duration);
+            sendAudioInfo();
+        };
+
+        audio.ontimeupdate = function() {
+            sendAudioInfo(); 
+        };
+
+        function formatTime(seconds) {
+            let minutes = Math.floor(seconds / 60);
+            let secs = Math.floor(seconds % 60);
+            if (secs < 10) secs = '0' + secs;
+            if (minutes < 10) minutes = '0' + minutes;
+            return minutes + ':' + secs;
         }
 
+        function playAudio() {
+            audio.play();
+            window.location.href = `uniwebview://audio?state=1`; // Устанавливаем значение 0 на pause
+        }
 
+        function pauseAudio() {
+            audio.pause();
+            window.location.href = `uniwebview://audio?state=0`; // Устанавливаем значение 0 на pause
+        }
+
+        function playPauseAudio() {
+            if (audio.paused) {
+                playAudio();
+            } else {
+                pauseAudio();
+            }
+        }
+
+        function seekForward() {
+            if (audio.duration > 0) {
+                audio.currentTime = Math.min(audio.currentTime + 15, audio.duration);
+                sendSeekInfo();
+            }
+        }
+
+        function seekBackward() {
+            if (audio.duration > 0) {
+                audio.currentTime = Math.max(audio.currentTime - 15, 0);
+                sendSeekInfo();
+            }
+        }
+
+        function loadAudio(url) {
+            const source = document.getElementById('audioSource');
+            source.src = url;
+            audio.load();
+            audio.play();
+            sendAudioState('playing');
+            console.log("Audio loaded and playing: " + url);
+        }
+
+        function sendAudioState(state) {
+            uniWebView.sendMessage({
+                path: 'audioState',
+                args: {
+                    state: state
+                }
+            });
+        }
+
+        function sendAudioInfo() {
+            let duration = audio.duration || 0;
+            let currentTime = audio.currentTime || 0;
+            uniWebView.sendMessage({
+                path: 'audioInfo',
+                args: {
+                    currentTime: currentTime.toString(),
+                    duration: duration.toString()
+                }
+            });
+        }
+
+        function sendSeekInfo() {
+            uniWebView.sendMessage({
+                path: 'seek',
+                args: {
+                    currentTime: audio.currentTime.toString()
+                }
+            });
+        }
+
+        setInterval(sendAudioInfo, 1000); 
+        document.addEventListener('click', playPauseAudio);
     </script>
 </body>
 </html>
