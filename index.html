@@ -4,22 +4,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Audio Player Test</title>
+    <style>
+        body {
+            background-color: #000; /* Чёрный фон */
+            color: #fff; /* Белый текст для контраста */
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            margin: 0;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        audio {
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+        }
+
+        button {
+            background-color: #1E90FF; /* Синий цвет кнопок */
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #4682B4; /* Темно-синий цвет при наведении */
+        }
+
+        button:active {
+            background-color: #104E8B; /* Ещё более тёмный синий при нажатии */
+        }
+
+        button:disabled {
+            background-color: #555; /* Серый цвет, если кнопка не активна */
+            cursor: not-allowed;
+        }
+
+    </style>
 </head>
 <body>
     <h1>Test Audio Player</h1>
+
     <audio id="audioPlayer" controls autoplay>
         <source id="audioSource" src="https://krutov89bk.online/kolibelnie/stories/20.Sneaky%20Hyena%20and%20the%20Teachers'%20Day%20Camp.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
+    <div class="controls">
+        <button id="playButton" onclick="playAudio()">Play</button>
+        <button id="pauseButton" onclick="pauseAudio()">Pause</button>
+        <button id="backwardButton" onclick="seekBackward()">⏪ -15s</button>
+        <button id="forwardButton" onclick="seekForward()">⏩ +15s</button>
+    </div>
+
     <script>
         const audio = document.getElementById('audioPlayer');
+        const playButton = document.getElementById('playButton');
+        const pauseButton = document.getElementById('pauseButton');
 
         // Воспроизведение аудио
         function playAudio() {
             if (audio.src) {
                 audio.play().then(() => {
                     sendAudioState("playing");
+                    updateButtonState();
                 }).catch(error => {
                     console.log("Auto-play was prevented:", error);
                 });
@@ -32,6 +94,7 @@
         function pauseAudio() {
             audio.pause();
             sendAudioState("paused");
+            updateButtonState();
         }
 
         // Перемотка вперед
@@ -63,6 +126,17 @@
             source.src = url;
             audio.load();
             console.log("Audio loaded with URL: " + url);
+        }
+
+        // Обновление состояния кнопок воспроизведения
+        function updateButtonState() {
+            if (!audio.paused) {
+                playButton.disabled = true;
+                pauseButton.disabled = false;
+            } else {
+                playButton.disabled = false;
+                pauseButton.disabled = true;
+            }
         }
 
         // Отправка состояния аудио (воспроизведение/пауза)
@@ -98,6 +172,9 @@
 
         // Обновление информации о текущем времени каждую секунду
         setInterval(getAudioInfo, 1000);
+
+        // Обновляем состояние кнопок при загрузке страницы
+        window.onload = updateButtonState;
     </script>
 </body>
 </html>
