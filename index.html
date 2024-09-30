@@ -55,15 +55,19 @@
             }
         }
 
-        function sendAudioInfo() {
-            let duration = audio.duration || 0;
-            let currentTime = audio.currentTime || 0;
-            window.location.href = `uniwebview://audio?currentTime=${currentTime}&duration=${duration}`;
+        function sendDuration(){
+            let duration         = audio.duration || 0;
+            window.location.href = `uniwebview://audio?audioInfo=${duration}`;
         }
 
+        function sendCurrentTime()
+        {
+            let currentTime      = audio.currentTime || 0;
+            window.location.href = `uniwebview://audio?audioInfo=${currentTime}`;
+        }
 
-
-        setInterval(sendAudioInfo, 1000); 
+        setInterval(sendDuration, 1000); 
+        setInterval(sendCurrentTime, 1000); 
 
         document.addEventListener('click', playPauseAudio);
     </script>
