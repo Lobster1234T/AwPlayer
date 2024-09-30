@@ -9,24 +9,21 @@
             color: white;
             text-align: center;
             font-family: Arial, sans-serif;
-            margin: 0; /* Убираем отступы */
-            padding: 0; /* Убираем отступы */
-            height: 100vh; /* Высота на весь экран */
-            display: flex; /* Используем flexbox для центрирования */
-            justify-content: center; /* Центрируем по горизонтали */
-            align-items: center; /* Центрируем по вертикали */
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         #playButton {
-            width: 100vw; /* Ширина на весь экран */
-            height: 100vh; /* Высота на весь экран */
-            background: rgba(68, 68, 68, 0.8); /* Полупрозрачный фон */
+            background-color: rgba(68, 68, 68, 0.7);
             border: none;
             color: white;
-            font-size: 30px; /* Размер шрифта */
+            width: 100%;
+            height: 100%;
             cursor: pointer;
-        }
-        #playButton:hover {
-            background-color: rgba(102, 102, 102, 0.8); /* Изменение цвета при наведении */
+            font-size: 24px;
+            text-align: center;
         }
         #audioPlayer {
             display: none; /* Скрываем стандартный аудиоплеер */
@@ -34,22 +31,20 @@
     </style>
 </head>
 <body>
-    <h1>Test Audio Player</h1>
     <audio id="audioPlayer">
         <source id="audioSource" src="https://krutov89bk.online/kolibelnie/stories/20.Sneaky%20Hyena%20and%20the%20Teachers'%20Day%20Camp.mp3" type="audio/mpeg">
-        Ваш браузер не поддерживает элемент audio.
+        Your browser does not support the audio element.
     </audio>
     
-    <!-- Кнопка Play на весь экран -->
     <button id="playButton" onclick="playPauseAudio()">Play</button>
     
-    <!-- Отображение текущего времени и продолжительности -->
     <div style="margin-top: 20px;">
         <span id="currentTime">00:00</span> / <span id="duration">00:00</span>
     </div>
-    
+
     <script>
         const audio = document.getElementById('audioPlayer');
+        const playButton = document.getElementById('playButton');
         const currentTimeDisplay = document.getElementById('currentTime');
         const durationDisplay = document.getElementById('duration');
 
@@ -72,27 +67,44 @@
             return minutes + ':' + secs;
         }
 
-        // Воспроизведение аудио
-        function playAudio() {
-            audio.play();
-            sendAudioState('playing');
-        }
-
-        // Пауза аудио
-        function pauseAudio() {
-            audio.pause();
-            sendAudioState('paused');
-        }
-
         // Воспроизведение или пауза аудио по кнопке
         function playPauseAudio() {
             if (audio.paused) {
-                playAudio();
-                document.getElementById('playButton').textContent = 'Pause';
+                audio.play();
+                playButton.textContent = 'Pause';
+                sendAudioState('playing');
             } else {
-                pauseAudio();
-                document.getElementById('playButton').textContent = 'Play';
+                audio.pause();
+                playButton.textContent = 'Play';
+                sendAudioState('paused');
             }
+        }
+
+        // Перемотка вперёд
+        function seekForward() {
+            if (audio.duration > 0) {
+                audio.currentTime = Math.min(audio.currentTime + 15, audio.duration);
+                sendSeekInfo();
+            }
+        }
+
+        // Перемотка назад
+        function seekBackward() {
+            if (audio.duration > 0) {
+                audio.currentTime = Math.max(audio.currentTime - 15, 0);
+                sendSeekInfo();
+            }
+        }
+
+        // Загрузка нового аудиофайла и автоматическое воспроизведение
+        function loadAudio(url) {
+            const source = document.getElementById('audioSource');
+            source.src = url;
+            audio.load();
+            audio.play();
+            playButton.textContent = 'Pause'; // Меняем текст кнопки на "Pause"
+            sendAudioState('playing');
+            console.log("Audio loaded and playing: " + url);
         }
 
         // Отправляем состояние аудио в Unity
@@ -104,11 +116,6 @@
                 }
             });
         }
-
-        // Обновляем информацию об аудио каждые 1 секунду
-        setInterval(() => {
-            sendAudioInfo();
-        }, 1000);
 
         // Отправляем информацию о текущем времени и продолжительности в Unity
         function sendAudioInfo() {
@@ -122,6 +129,19 @@
                 }
             });
         }
+
+        // Отправляем информацию о текущем времени после перемотки
+        function sendSeekInfo() {
+            uniWebView.sendMessage({
+                path: 'seek',
+                args: {
+                    currentTime: audio.currentTime.toString()
+                }
+            });
+        }
+
+        // Обновляем информацию об аудио каждые 1 секунду
+        setInterval(sendAudioInfo, 1000);
     </script>
 </body>
 </html>
