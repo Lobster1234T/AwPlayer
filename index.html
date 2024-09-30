@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Audio Player Test</title>
 </head>
-<body onload="playAudio()">
+<body>
     <h1>Test Audio Player</h1>
     <audio id="audioPlayer" controls autoplay>
         <source id="audioSource" src="https://krutov89bk.online/kolibelnie/stories/20.Sneaky%20Hyena%20and%20the%20Teachers'%20Day%20Camp.mp3" type="audio/mpeg">
@@ -15,11 +15,11 @@
     <script>
         const audio = document.getElementById('audioPlayer');
 
-        // Play audio
+        // Воспроизведение аудио
         function playAudio() {
             if (audio.src) {
                 audio.play().then(() => {
-                    console.log("Audio is playing");
+                    sendAudioState("playing");
                 }).catch(error => {
                     console.log("Auto-play was prevented:", error);
                 });
@@ -28,36 +28,36 @@
             }
         }
 
-        // Pause audio
+        // Пауза аудио
         function pauseAudio() {
             audio.pause();
-            console.log("Audio paused");
+            sendAudioState("paused");
         }
 
-        // Seek forward
+        // Перемотка вперед
         function seekForward() {
             if (audio.duration > 0) {
                 audio.currentTime += 15;
-                console.log("Seeked forward 15 seconds. Current time: " + audio.currentTime);
+                sendSeekInfo();
             }
         }
 
-        // Seek backward
+        // Перемотка назад
         function seekBackward() {
             if (audio.duration > 0) {
                 audio.currentTime -= 15;
-                console.log("Seeked backward 15 seconds. Current time: " + audio.currentTime);
+                sendSeekInfo();
             }
         }
 
-        // Get current time and duration
+        // Получение информации о текущем времени и длительности
         function getAudioInfo() {
             let duration = audio.duration || 0;
             let currentTime = audio.currentTime || 0;
-            console.log('Current Time: ' + currentTime + ' | Duration: ' + duration);
+            sendAudioInfo(currentTime, duration);
         }
 
-        // Load new audio file
+        // Загрузка нового аудиофайла
         function loadAudio(url) {
             const source = document.getElementById('audioSource');
             source.src = url;
@@ -65,7 +65,38 @@
             console.log("Audio loaded with URL: " + url);
         }
 
-        // Update current time every second
+        // Отправка состояния аудио (воспроизведение/пауза)
+        function sendAudioState(state) {
+            uniWebView.sendMessage({
+                path: 'audioState',
+                args: {
+                    state: state
+                }
+            });
+        }
+
+        // Отправка информации о текущем времени и длительности
+        function sendAudioInfo(currentTime, duration) {
+            uniWebView.sendMessage({
+                path: 'audioInfo',
+                args: {
+                    currentTime: currentTime.toString(),
+                    duration: duration.toString()
+                }
+            });
+        }
+
+        // Отправка информации о текущем времени для перемотки
+        function sendSeekInfo() {
+            uniWebView.sendMessage({
+                path: 'seek',
+                args: {
+                    currentTime: audio.currentTime.toString()
+                }
+            });
+        }
+
+        // Обновление информации о текущем времени каждую секунду
         setInterval(getAudioInfo, 1000);
     </script>
 </body>
