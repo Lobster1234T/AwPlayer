@@ -15,11 +15,6 @@
             overflow: hidden; /* Убираем прокрутку */
             cursor: pointer; /* Указатель мыши */
         }
-        
-        /* Скрываем сам аудиоплеер */
-        audio {
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -42,37 +37,12 @@
             window.location.href = 'uniwebview://pauseAudio';
         }
 
-        // Сообщение в Unity для перемотки вперед
-        function seekForward() {
-            if (audio.duration > 0) {
-                audio.currentTime = Math.min(audio.currentTime + 15, audio.duration);
-                window.location.href = 'uniwebview://seekForward';
-            }
-        }
-
-        // Сообщение в Unity для перемотки назад
-        function seekBackward() {
-            if (audio.duration > 0) {
-                audio.currentTime = Math.max(audio.currentTime - 15, 0);
-                window.location.href = 'uniwebview://seekBackward';
-            }
-        }
-
         // Автоматическая обработка кликов: воспроизведение/пауза
         document.addEventListener('click', function() {
             if (audio.paused) {
                 playAudio();
             } else {
                 pauseAudio();
-            }
-        });
-
-        // Обработка клавиш перемотки
-        document.addEventListener('keydown', function(event) {
-            if (event.code === 'ArrowRight') {
-                seekForward();
-            } else if (event.code === 'ArrowLeft') {
-                seekBackward();
             }
         });
     </script>
