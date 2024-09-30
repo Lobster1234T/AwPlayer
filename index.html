@@ -16,7 +16,7 @@
             align-items: center;
         }
         #playButton {
-            background-color: rgba(38, 28, 158, 0.7);
+            background-color: rgba(68, 68, 255, 0.7);
             border: none;
             color: white;
             width: 100%;
@@ -51,6 +51,7 @@
         // Загружаем метаданные аудио и получаем продолжительность
         audio.onloadedmetadata = function() {
             durationDisplay.textContent = formatTime(audio.duration);
+            console.log("Audio metadata loaded. Duration: " + audio.duration);
         };
 
         // Обновляем отображение текущего времени
@@ -109,35 +110,44 @@
 
         // Отправляем состояние аудио в Unity
         function sendAudioState(state) {
-            uniWebView.sendMessage({
-                path: 'audioState',
-                args: {
-                    state: state
-                }
-            });
+            if (typeof uniWebView !== "undefined") {
+                uniWebView.sendMessage({
+                    path: 'audioState',
+                    args: {
+                        state: state
+                    }
+                });
+                console.log("Audio state sent to Unity: " + state);
+            }
         }
 
         // Отправляем информацию о текущем времени и продолжительности в Unity
         function sendAudioInfo() {
             let duration = audio.duration || 0;
             let currentTime = audio.currentTime || 0;
-            uniWebView.sendMessage({
-                path: 'audioInfo',
-                args: {
-                    currentTime: currentTime.toString(),
-                    duration: duration.toString()
-                }
-            });
+            if (typeof uniWebView !== "undefined") {
+                uniWebView.sendMessage({
+                    path: 'audioInfo',
+                    args: {
+                        currentTime: currentTime.toString(),
+                        duration: duration.toString()
+                    }
+                });
+                console.log("Audio info sent to Unity: Current Time: " + currentTime + " Duration: " + duration);
+            }
         }
 
         // Отправляем информацию о текущем времени после перемотки
         function sendSeekInfo() {
-            uniWebView.sendMessage({
-                path: 'seek',
-                args: {
-                    currentTime: audio.currentTime.toString()
-                }
-            });
+            if (typeof uniWebView !== "undefined") {
+                uniWebView.sendMessage({
+                    path: 'seek',
+                    args: {
+                        currentTime: audio.currentTime.toString()
+                    }
+                });
+                console.log("Seek info sent to Unity: Current Time: " + audio.currentTime);
+            }
         }
 
         // Обновляем информацию об аудио каждые 1 секунду
