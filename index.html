@@ -5,13 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Audio Player</title>
     <style>
-        body {
+        body, html {
             background-color: rgba(0, 0, 0, 0); /* Полностью прозрачный фон */
             color: transparent; /* Скрыть текст */
             margin: 0;
             padding: 0;
-            cursor: pointer;
+            cursor: pointer; /* Изменить курсор на указатель */
             overflow: hidden; /* Убираем прокрутку */
+            height: 100%; /* Заполнение всей высоты страницы */
+        }
+
+        audio {
+            display: none; /* Полностью скрываем элемент audio */
         }
     </style>
 </head>
