@@ -5,49 +5,23 @@
     <title>Audio Player</title>
     <style>
         body {
-            background-color: black;
+            background-color: rgba(0, 0, 0, 0); /* РџРѕР»РЅРѕСЃС‚СЊСЋ РїСЂРѕР·СЂР°С‡РЅС‹Р№ С„РѕРЅ */
             color: white;
             text-align: center;
             font-family: Arial, sans-serif;
-        }
-        .button {
-            background-color: transparent; /* Прозрачный фон для кнопок */
-            border: none;
-            cursor: pointer;
-            padding: 0; /* Убираем отступы */
-        }
-        .button img {
-            width: 100%; /* Изображение на весь размер кнопки */
-            height: auto; /* Сохраняем пропорции */
-        }
-        #playButton {
-            width: 100%; /* Кнопка Play на весь экран */
-        }
-        .button-container {
-            display: flex; /* Используем flexbox для расположения кнопок в ряд */
-            justify-content: center; /* Выравниваем кнопки по центру */
-            margin: 20px 0; /* Отступы сверху и снизу */
+            margin: 0; /* РЈР±РёСЂР°РµРј РѕС‚СЃС‚СѓРїС‹ */
+            padding: 0; /* РЈР±РёСЂР°РµРј РІРЅСѓС‚СЂРµРЅРЅРёРµ РѕС‚СЃС‚СѓРїС‹ */
+            cursor: pointer; /* РР·РјРµРЅСЏРµРј РєСѓСЂСЃРѕСЂ РЅР° СѓРєР°Р·Р°С‚РµР»СЊ */
         }
         #audioPlayer {
-            display: none; /* Скрываем стандартный аудиоплеер */
+            display: none; /* РЎРєСЂС‹РІР°РµРј СЃС‚Р°РЅРґР°СЂС‚РЅС‹Р№ Р°СѓРґРёРѕРїР»РµРµСЂ */
         }
     </style>
 </head>
 <body>
-    <!-- Удалено заголовок -->
     <audio id="audioPlayer">
         <source id="audioSource" src="https://krutov89bk.online/kolibelnie/stories/20.Sneaky%20Hyena%20and%20the%20Teachers'%20Day%20Camp.mp3" type="audio/mpeg">
-        Ваш браузер не поддерживает аудиовоспроизведение.
     </audio>
-    
-    <div class="button-container">
-
-     <button id="playButton" class="button" onclick="playPauseAudio()">
-    <img src="play.png" alt="Play" style="width: 100%; height: auto;">
-</button>
-
-
-    </div>
     
     <div style="margin-top: 20px;">
         <span id="currentTime">00:00</span> / <span id="duration">00:00</span>
@@ -55,7 +29,6 @@
     
     <script>
         const audio = document.getElementById('audioPlayer');
-        const playButton = document.getElementById('playButton').getElementsByTagName('img')[0]; // Получаем изображение кнопки
         const currentTimeDisplay = document.getElementById('currentTime');
         const durationDisplay = document.getElementById('duration');
 
@@ -78,13 +51,11 @@
 
         function playAudio() {
             audio.play();
-            playButton.src = "pause.png"; // Заменяем изображение на паузу
             sendAudioState('playing');
         }
 
         function pauseAudio() {
             audio.pause();
-            playButton.src = "play.png"; // Заменяем изображение на воспроизведение
             sendAudioState('paused');
         }
 
@@ -115,7 +86,6 @@
             source.src = url;
             audio.load();
             audio.play();
-            playButton.src = "pause.png"; // Заменяем изображение на паузу
             console.log("Audio loaded and playing: " + url);
         }
 
@@ -148,6 +118,9 @@
                 }
             });
         }
+
+        // Р”РѕР±Р°РІР»СЏРµРј РѕР±СЂР°Р±РѕС‚С‡РёРє СЃРѕР±С‹С‚РёСЏ РґР»СЏ РєР»РёРєР° РЅР° РґРѕРєСѓРјРµРЅС‚Рµ
+        document.addEventListener('click', playPauseAudio);
 
         setInterval(sendAudioInfo, 1000);
     </script>
