@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Важно для адаптации на мобильных устройствах -->
     <title>Audio Player Test</title>
     <style>
         body {
@@ -13,17 +14,26 @@
             padding: 0;
         }
 
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap; /* Кнопки будут автоматически переноситься на новую строку, если экран маленький */
+            margin-top: 20px;
+        }
+
         .button {
             background-color: #444;
             border: none;
             color: white;
-            padding: 15px 20px;
+            padding: 10px 15px;
             text-align: center;
             text-decoration: none;
             margin: 10px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 5vw; /* Размер шрифта адаптируется под ширину экрана */
             display: inline-block;
+            border-radius: 5px;
         }
 
         .button:hover {
@@ -34,26 +44,35 @@
             display: none; /* Прячем стандартный аудиоплеер */
         }
 
-        .controls {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        /* Медиа-запросы для адаптации под экраны разных размеров */
+        @media (max-width: 768px) {
+            .button {
+                font-size: 4vw; /* Уменьшаем размер шрифта на планшетах и небольших экранах */
+                padding: 8px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .button {
+                font-size: 3.5vw; /* Еще больше уменьшаем на мобильных */
+                padding: 6px 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Кнопки управления аудио -->
-    <div class="controls">
-        <button class="button" onclick="seekBackward()">&#9664;&#9664; Назад 15 сек</button>
-        <button class="button" onclick="playPauseAudio()" id="playPauseButton">Play</button>
-        <button class="button" onclick="seekForward()">Вперед 15 сек &#9654;&#9654;</button>
-    </div>
-
+    <h1>Audio Player</h1>
     <audio id="audioPlayer">
         <source id="audioSource" src="https://krutov89bk.online/kolibelnie/stories/20.Sneaky%20Hyena%20and%20the%20Teachers'%20Day%20Camp.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
+    
+    <!-- Кнопки управления аудио -->
+    <div class="controls">
+        <button class="button" onclick="seekBackward()">&#9664;&#9664; -15 сек</button>
+        <button class="button" onclick="playPauseAudio()" id="playPauseButton">Play</button>
+        <button class="button" onclick="seekForward()">+15 сек &#9654;&#9654;</button>
+    </div>
 
     <script>
         const audio = document.getElementById('audioPlayer');
