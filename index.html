@@ -48,23 +48,16 @@
 
         function playAudio() {
             audio.play();
-                uniWebView.sendMessage({
-                path: 'playing',
-                args: {
-                    score: 100 // Здесь 100 — это пример счёта
-                }
+                'playing'
+                "playing;
                 });
 
         }
 
         function pauseAudio() {
             audio.pause();
-                uniWebView.sendMessage({
-                path: 'pause',
-                args: {
-                    score: 50 // Здесь 100 — это пример счёта
-                }
-                });
+                'pause'
+                "pause;
 
         }
 
