@@ -44,14 +44,10 @@
         function sendClick() {
             clickCount++;
             // Отправляем количество кликов в Unity через схему uniwebview
-            window.location.href = `uniwebview://update-click-count?count=${clickCount}`;
+            window.location.href = `uniwebview://Click?count=${clickCount}`;
         }
 
-        function updateClickCount(count) {
-            // Обновляем количество кликов на странице
-            clickCount = count;
-            console.log("Количество кликов обновлено на веб-странице: " + clickCount);
-        }
+
     </script>
 </body>
 </html>
