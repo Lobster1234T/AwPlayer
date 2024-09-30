@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Player</title>
+    <title>Audio Player Test</title>
 </head>
 <body>
+    <h1>Test Audio Player</h1>
     <audio id="audioPlayer" controls>
-        <source id="audioSource" src="" type="audio/mpeg">
+        <source id="audioSource" src="https://krutov89bk.online/kolibelnie/stories/20.Sneaky%20Hyena%20and%20the%20Teachers'%20Day%20Camp.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
@@ -16,37 +17,41 @@
 
         // Play audio
         function playAudio() {
-            console.log("playAudio called");
-            audio.play();
-            window.uniwebview.sendMessage('audioState', { state: 'playing' });
+            if (audio.src) {
+                audio.play();
+                console.log("Playing audio");
+            } else {
+                console.log("Audio source is empty. Load the audio first.");
+            }
         }
 
         // Pause audio
         function pauseAudio() {
-            console.log("pauseAudio called");
             audio.pause();
-            window.uniwebview.sendMessage('audioState', { state: 'paused' });
+            console.log("Audio paused");
         }
 
         // Seek forward
         function seekForward() {
-            console.log("seekForward called");
-            audio.currentTime += 15;
-            window.uniwebview.sendMessage('seek', { currentTime: audio.currentTime });
+            if (audio.duration > 0) {
+                audio.currentTime += 15;
+                console.log("Seeked forward 15 seconds. Current time: " + audio.currentTime);
+            }
         }
 
         // Seek backward
         function seekBackward() {
-            console.log("seekBackward called");
-            audio.currentTime -= 15;
-            window.uniwebview.sendMessage('seek', { currentTime: audio.currentTime });
+            if (audio.duration > 0) {
+                audio.currentTime -= 15;
+                console.log("Seeked backward 15 seconds. Current time: " + audio.currentTime);
+            }
         }
 
         // Get current time and duration
         function getAudioInfo() {
-            let duration = audio.duration;
-            let currentTime = audio.currentTime;
-            window.uniwebview.sendMessage('audioInfo', { currentTime: currentTime, duration: duration });
+            let duration = audio.duration || 0;
+            let currentTime = audio.currentTime || 0;
+            console.log('Current Time: ' + currentTime + ' | Duration: ' + duration);
         }
 
         // Load new audio file
@@ -54,6 +59,7 @@
             const source = document.getElementById('audioSource');
             source.src = url;
             audio.load();
+            console.log("Audio loaded with URL: " + url);
         }
 
         // Update current time every second
