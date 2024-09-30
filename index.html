@@ -2,127 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Audio Player</title>
-    <style>
-        body {
-            background-color: rgba(0, 0, 0, 0); 
-            color: transparent; 
-            margin: 0; 
-            padding: 0; 
-            cursor: pointer; 
-            overflow: hidden; 
+    <title>ToadCast Demo</title>
+    <script>
+        function sendMessageToUnity(message) {
+            // Отправляем сообщение в Unity через ToadCast
+            window.toadCast.send(message);
         }
-    </style>
+    </script>
 </head>
 <body>
-    <audio id="audioPlayer">
-        <source id="audioSource" src="https://krutov89bk.online/kolibelnie/stories/20.Sneaky%20Hyena%20and%20the%20Teachers'%20Day%20Camp.mp3" type="audio/mpeg">
-    </audio>
-
-    <a href="javascript:playAudio()">playAudio</a>
-    <a href="javascript:pauseAudio()">pauseAudio</a>
-
-     <a href="myscheme://action">Click Me</a>
-
-    <script>
-        const audio = document.getElementById('audioPlayer');
-        const currentTimeDisplay = document.getElementById('currentTime');
-        const durationDisplay = document.getElementById('duration');
-
-        audio.onloadedmetadata = function() {
-            durationDisplay.textContent = formatTime(audio.duration);
-            sendAudioInfo();
-        };
-
-        audio.ontimeupdate = function() {
-            sendAudioInfo(); 
-        };
-
-        function formatTime(seconds) {
-            let minutes = Math.floor(seconds / 60);
-            let secs = Math.floor(seconds % 60);
-            if (secs < 10) secs = '0' + secs;
-            if (minutes < 10) minutes = '0' + minutes;
-            return minutes + ':' + secs;
-        }
-
-        function playAudio() {
-            audio.play();
-            sendAudioState('playing');
-            "play"
-            'play'
-        }
-
-        function pauseAudio() {
-            audio.pause();
-            sendAudioState('paused');
-            "paused"
-            'paused'
-        }
-
-        function playPauseAudio() {
-            if (audio.paused) {
-                playAudio();
-            } else {
-                pauseAudio();
-            }
-        }
-
-        function seekForward() {
-            if (audio.duration > 0) {
-                audio.currentTime = Math.min(audio.currentTime + 15, audio.duration);
-                sendSeekInfo();
-            }
-        }
-
-        function seekBackward() {
-            if (audio.duration > 0) {
-                audio.currentTime = Math.max(audio.currentTime - 15, 0);
-                sendSeekInfo();
-            }
-        }
-
-        function loadAudio(url) {
-            const source = document.getElementById('audioSource');
-            source.src = url;
-            audio.load();
-            audio.play();
-            sendAudioState('playing');
-            console.log("Audio loaded and playing: " + url);
-        }
-
-        function sendAudioState(state) {
-            uniWebView.sendMessage({
-                path: 'audioState',
-                args: {
-                    state: state
-                }
-            });
-        }
-
-        function sendAudioInfo() {
-            let duration = audio.duration || 0;
-            let currentTime = audio.currentTime || 0;
-            uniWebView.sendMessage({
-                path: 'audioInfo',
-                args: {
-                    currentTime: currentTime.toString(),
-                    duration: duration.toString()
-                }
-            });
-        }
-
-        function sendSeekInfo() {
-            uniWebView.sendMessage({
-                path: 'seek',
-                args: {
-                    currentTime: audio.currentTime.toString()
-                }
-            });
-        }
-
-        setInterval(sendAudioInfo, 1000); 
-        document.addEventListener('click', playPauseAudio);
-    </script>
+    <h1>ToadCast Demo</h1>
+    <button onclick="sendMessageToUnity('Hello from HTML!')">Send Message</button>
 </body>
 </html>
