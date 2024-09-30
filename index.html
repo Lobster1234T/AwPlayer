@@ -48,19 +48,23 @@
 
         function playAudio() {
             audio.play();
-            sendAudioState('playing');
+                sendAudioState('playing');
+
         }
 
         function pauseAudio() {
             audio.pause();
-            sendAudioState('paused');
+                sendAudioState('paused');
+
         }
 
         function playPauseAudio() {
             if (audio.paused) {
+                sendAudioState('playing');
                 playAudio();
             } else {
                 pauseAudio();
+                sendAudioState('paused');
             }
         }
 
@@ -88,16 +92,12 @@
         }
 
         function sendAudioState(state) {
-            if (typeof uniWebView !== 'undefined') {
                 uniWebView.sendMessage({
                     path: 'audioState',
                     args: {
                         state: state
                     }
                 });
-            } else {
-                console.log("Audio state: " + state); // Для тестирования без uniWebView
-            }
         }
 
         function sendAudioInfo() {
