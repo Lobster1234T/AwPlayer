@@ -52,7 +52,9 @@
         // Load audio file and play it
         window.onload = function() {
             loadAudio(audioSource.src);
-            playAudio(); // Здесь вызываем playAudio
+            audio.oncanplaythrough = function() {
+                playAudio(); // Воспроизводим, когда аудио готово
+            };
         };
 
         // Play or pause audio
