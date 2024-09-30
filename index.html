@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniWebView Demo</title>
+    <title>Clicker Demo</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -33,19 +33,24 @@
 </head>
 <body>
     <div class="container">
-        <h1>UniWebView TextMeshPro Demo</h1>
-        <p>Нажмите на кнопку, чтобы отправить сообщение в Unity:</p>
-        <button onclick="sendMessage()">Отправить сообщение</button>
+        <h1>Clicker Demo</h1>
+        <p>Нажмите на кнопку, чтобы увеличить количество кликов:</p>
+        <button onclick="sendClick()">Клик</button>
     </div>
 
     <script>
         let clickCount = 0;
 
-        function sendMessage() {
+        function sendClick() {
             clickCount++;
-            // Формируем URL с данными для передачи в Unity
-            "uniwebview://UpdateClickCount?demo=" + clickCount;
+            // Отправляем количество кликов в Unity через схему uniwebview
+            window.location.href = `uniwebview://update-click-count?count=${clickCount}`;
+        }
 
+        function updateClickCount(count) {
+            // Обновляем количество кликов на странице
+            clickCount = count;
+            console.log("Количество кликов обновлено на веб-странице: " + clickCount);
         }
     </script>
 </body>
