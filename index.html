@@ -3,101 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Player</title>
-    <style>
-        /* Сделаем полностью прозрачным весь документ */
-        html, body {
-            background-color: transparent; /* Прозрачный фон */
-            color: transparent; /* Скрываем текст */
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden; /* Убираем прокрутку */
-            cursor: pointer; /* Указатель мыши */
-        }
-
-        /* Полностью скрываем аудио элемент */
-        audio {
-            display: none; /* Прячем аудио-плеер */
-        }
-
-        /* Прячем любые дополнительные элементы, если они появятся */
-        * {
-            visibility: hidden;
-        }
-    </style>
+    <title>Audio Control</title>
 </head>
 <body>
-    <audio id="audioPlayer">
+    <audio id="audioPlayer" controls>
         <source id="audioSource" src="https://krutov89bk.online/kolibelnie/stories/20.Sneaky%20Hyena%20and%20the%20Teachers'%20Day%20Camp.mp3" type="audio/mpeg">
     </audio>
 
     <script>
         const audio = document.getElementById('audioPlayer');
 
-        audio.onloadedmetadata = function() {
-            sendAudioInfo();
-        };
-
-        audio.ontimeupdate = function() {
-            sendAudioInfo();
-        };
-
-        function sendAudioState(state) {
-            uniWebView.sendMessage('audioState', state);
-        }
-
-        function sendAudioInfo() {
-            const duration = audio.duration || 0;
-            const currentTime = audio.currentTime || 0;
-            uniWebView.sendMessage('audioInfo', JSON.stringify({
-                currentTime: currentTime.toFixed(2),
-                duration: duration.toFixed(2)
-            }));
-        }
-
+        // Сообщение в Unity для старта аудио
         function playAudio() {
             audio.play();
-            sendAudioState('playing');
+            window.location.href = 'uniwebview://playAudio';
         }
 
+        // Сообщение в Unity для остановки аудио
         function pauseAudio() {
             audio.pause();
-            sendAudioState('paused');
+            window.location.href = 'uniwebview://pauseAudio';
         }
 
-        function playPauseAudio() {
+        // Сообщение в Unity для перемотки вперед
+        function seekForward() {
+            if (audio.duration > 0) {
+                audio.currentTime = Math.min(audio.currentTime + 15, audio.duration);
+                window.location.href = 'uniwebview://seekForward';
+            }
+        }
+
+        // Сообщение в Unity для перемотки назад
+        function seekBackward() {
+            if (audio.duration > 0) {
+                audio.currentTime = Math.max(audio.currentTime - 15, 0);
+                window.location.href = 'uniwebview://seekBackward';
+            }
+        }
+
+        // Автоматическая обработка кликов: воспроизведение/пауза
+        document.addEventListener('click', function() {
             if (audio.paused) {
                 playAudio();
             } else {
                 pauseAudio();
             }
-        }
+        });
 
-        function seekForward() {
-            if (audio.duration > 0) {
-                audio.currentTime = Math.min(audio.currentTime + 15, audio.duration);
-                sendAudioInfo();
+        // Вызываем перемотку вперед и назад с клавиатуры (можно настроить на кнопки)
+        document.addEventListener('keydown', function(event) {
+            if (event.code === 'ArrowRight') {
+                seekForward();
+            } else if (event.code === 'ArrowLeft') {
+                seekBackward();
             }
-        }
-
-        function seekBackward() {
-            if (audio.duration > 0) {
-                audio.currentTime = Math.max(audio.currentTime - 15, 0);
-                sendAudioInfo();
-            }
-        }
-
-        function loadAudio(url) {
-            const source = document.getElementById('audioSource');
-            source.src = url;
-            audio.load();
-            audio.play();
-            sendAudioState('playing');
-        }
-
-        document.addEventListener('click', playPauseAudio);
+        });
     </script>
 </body>
 </html>
