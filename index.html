@@ -2,18 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Control</title>
+    <title>Audio Player</title>
     <style>
-        /* Прозрачный фон и скрытие всех элементов */
-        html, body {
-            background-color: transparent; /* Прозрачный фон */
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden; /* Убираем прокрутку */
-            cursor: pointer; /* Указатель мыши */
+        body {
+            background-color: rgba(0, 0, 0, 0); /* Полностью прозрачный фон */
+            color: transparent; /* Скрыть текст */
+            margin: 0; /* Убираем отступы */
+            padding: 0; /* Убираем внутренние отступы */
+            cursor: pointer; /* Изменяем курсор на указатель */
+            overflow: hidden; /* Убираем прокрутку, если есть */
         }
     </style>
 </head>
@@ -24,27 +21,101 @@
 
     <script>
         const audio = document.getElementById('audioPlayer');
+        const currentTimeDisplay = document.getElementById('currentTime');
+        const durationDisplay = document.getElementById('duration');
 
-        // Сообщение в Unity для старта аудио
+        audio.onloadedmetadata = function() {
+            durationDisplay.textContent = formatTime(audio.duration);
+            sendAudioInfo();
+        };
+
+        audio.ontimeupdate = function() {
+            sendAudioInfo(); // Убедитесь, что информация отправляется при обновлении времени
+        };
+
+        function formatTime(seconds) {
+            let minutes = Math.floor(seconds / 60);
+            let secs = Math.floor(seconds % 60);
+            if (secs < 10) secs = '0' + secs;
+            if (minutes < 10) minutes = '0' + minutes;
+            return minutes + ':' + secs;
+        }
+
         function playAudio() {
             audio.play();
-            window.location.href = 'uniwebview://playAudio';
+            sendAudioState('playing');
         }
 
-        // Сообщение в Unity для остановки аудио
         function pauseAudio() {
             audio.pause();
-            window.location.href = 'uniwebview://pauseAudio';
+            sendAudioState('paused');
         }
 
-        // Автоматическая обработка кликов: воспроизведение/пауза
-        document.addEventListener('click', function() {
+        function playPauseAudio() {
             if (audio.paused) {
                 playAudio();
             } else {
                 pauseAudio();
             }
-        });
+        }
+
+        function seekForward() {
+            if (audio.duration > 0) {
+                audio.currentTime = Math.min(audio.currentTime + 15, audio.duration);
+                sendSeekInfo();
+            }
+        }
+
+        function seekBackward() {
+            if (audio.duration > 0) {
+                audio.currentTime = Math.max(audio.currentTime - 15, 0);
+                sendSeekInfo();
+            }
+        }
+
+        function loadAudio(url) {
+            const source = document.getElementById('audioSource');
+            source.src = url;
+            audio.load();
+            audio.play();
+            sendAudioState('playing'); // Отправляем состояние воспроизведения
+            console.log("Audio loaded and playing: " + url);
+        }
+
+        function sendAudioState(state) {
+            uniWebView.sendMessage({
+                path: 'audioState',
+                args: {
+                    state: state
+                }
+            });
+        }
+
+        function sendAudioInfo() {
+            let duration = audio.duration || 0;
+            let currentTime = audio.currentTime || 0;
+            uniWebView.sendMessage({
+                path: 'audioInfo',
+                args: {
+                    currentTime: currentTime.toString(),
+                    duration: duration.toString()
+                }
+            });
+        }
+
+        function sendSeekInfo() {
+            uniWebView.sendMessage({
+                path: 'seek',
+                args: {
+                    currentTime: audio.currentTime.toString()
+                }
+            });
+        }
+
+        setInterval(sendAudioInfo, 1000); // Отправляем информацию о аудио каждую секунду
+
+        // Добавляем обработчик события для клика на документе
+        document.addEventListener('click', playPauseAudio);
     </script>
 </body>
 </html>
