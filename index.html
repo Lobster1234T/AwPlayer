@@ -10,7 +10,11 @@
             margin: 0; 
             padding: 0; 
             cursor: pointer; 
-            overflow: hidden; 
+            overflow: hidden;
+        }
+        a {
+            color: transparent; /* Ссылки также прозрачные */
+            text-decoration: none; /* Убираем подчеркивание ссылок */
         }
     </style>
 </head>
@@ -22,7 +26,7 @@
     <a href="javascript:playAudio()">playAudio</a>
     <a href="javascript:pauseAudio()">pauseAudio</a>
 
-     <a href="myscheme://action">Click Me</a>
+    <a href="myscheme://action">Click Me</a>
 
     <script>
         const audio = document.getElementById('audioPlayer');
@@ -48,12 +52,12 @@
 
         function playAudio() {
             audio.play();
-            window.location.href = `uniwebview://audio?state=1`; // Устанавливаем значение 0 на pause
+            window.location.href = `uniwebview://audio?state=1`; 
         }
 
         function pauseAudio() {
             audio.pause();
-            window.location.href = `uniwebview://audio?state=0`; // Устанавливаем значение 0 на pause
+            window.location.href = `uniwebview://audio?state=0`; 
         }
 
         function playPauseAudio() {
