@@ -33,11 +33,13 @@
         function playAudio() {
             audio.play();
             sendAudioState('playing');
+            window.unityInstance.SendMessage('UniWebView2', 'ReceiveLogMessage', 'play');
         }
 
         function pauseAudio() {
             audio.pause();
             sendAudioState('paused');
+            window.unityInstance.SendMessage('UniWebView2', 'ReceiveLogMessage', 'stop');
         }
 
         function playPauseAudio() {
