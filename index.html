@@ -74,8 +74,7 @@
             const source = document.getElementById('audioSource');
             source.src = url;
             audio.load();
-            playButton.textContent = 'Pause';
-            console.log("Audio loaded and playing: " + url);
+            pauseAudio();
         }
 
         // Перемотка вперед на 15 секунд
