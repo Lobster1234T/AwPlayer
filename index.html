@@ -1,38 +1,32 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Тест аудиоплеера</title>
+    <title>Audio Player Test</title>
     <style>
         body {
             background-color: black;
             color: white;
             text-align: center;
             font-family: Arial, sans-serif;
-            margin: 0; /* Убираем отступы по умолчанию */
-            height: 100vh; /* Задаем высоту на весь экран */
-            display: flex; /* Используем Flexbox для центрирования */
-            flex-direction: column; /* Вертикальная ориентация */
-            justify-content: center; /* Центрирование по вертикали */
-            align-items: center; /* Центрирование по горизонтали */
+            margin: 0; /* Убираем отступы */
+            padding: 0; /* Убираем отступы */
+            height: 100vh; /* Высота на весь экран */
+            display: flex; /* Используем flexbox для центрирования */
+            justify-content: center; /* Центрируем по горизонтали */
+            align-items: center; /* Центрируем по вертикали */
         }
-        .button {
-            background-color: rgba(68, 68, 68, 0.8); /* Полупрозрачный фон */
-            border: none;
-            color: white;
-            font-size: 48px; /* Увеличенный размер текста */
+        #playButton {
             width: 100vw; /* Ширина на весь экран */
             height: 100vh; /* Высота на весь экран */
-            position: absolute; /* Позиционируем кнопку абсолютно */
-            top: 0; /* Прикрепляем к верхней части */
-            left: 0; /* Прикрепляем к левой стороне */
-            display: flex; /* Используем Flexbox для центрирования текста */
-            justify-content: center; /* Центрирование текста по горизонтали */
-            align-items: center; /* Центрирование текста по вертикали */
-            cursor: pointer; /* Указатель курсора при наведении */
+            background: rgba(68, 68, 68, 0.8); /* Полупрозрачный фон */
+            border: none;
+            color: white;
+            font-size: 30px; /* Размер шрифта */
+            cursor: pointer;
         }
-        .button:hover {
-            background-color: rgba(102, 102, 102, 0.9); /* Более темный фон при наведении */
+        #playButton:hover {
+            background-color: rgba(102, 102, 102, 0.8); /* Изменение цвета при наведении */
         }
         #audioPlayer {
             display: none; /* Скрываем стандартный аудиоплеер */
@@ -40,14 +34,14 @@
     </style>
 </head>
 <body>
-    <h1>Тест аудиоплеера</h1>
+    <h1>Test Audio Player</h1>
     <audio id="audioPlayer">
         <source id="audioSource" src="https://krutov89bk.online/kolibelnie/stories/20.Sneaky%20Hyena%20and%20the%20Teachers'%20Day%20Camp.mp3" type="audio/mpeg">
         Ваш браузер не поддерживает элемент audio.
     </audio>
     
-    <!-- Кастомная кнопка управления Play -->
-    <button class="button" onclick="playPauseAudio()" id="playPauseButton">Play</button>
+    <!-- Кнопка Play на весь экран -->
+    <button id="playButton" onclick="playPauseAudio()">Play</button>
     
     <!-- Отображение текущего времени и продолжительности -->
     <div style="margin-top: 20px;">
@@ -56,14 +50,12 @@
     
     <script>
         const audio = document.getElementById('audioPlayer');
-        const playPauseButton = document.getElementById('playPauseButton');
         const currentTimeDisplay = document.getElementById('currentTime');
         const durationDisplay = document.getElementById('duration');
 
         // Загружаем метаданные аудио и получаем продолжительность
         audio.onloadedmetadata = function() {
             durationDisplay.textContent = formatTime(audio.duration);
-            sendAudioInfo();
         };
 
         // Обновляем отображение текущего времени
@@ -83,14 +75,12 @@
         // Воспроизведение аудио
         function playAudio() {
             audio.play();
-            playPauseButton.textContent = 'Pause';
             sendAudioState('playing');
         }
 
         // Пауза аудио
         function pauseAudio() {
             audio.pause();
-            playPauseButton.textContent = 'Play';
             sendAudioState('paused');
         }
 
@@ -98,35 +88,11 @@
         function playPauseAudio() {
             if (audio.paused) {
                 playAudio();
+                document.getElementById('playButton').textContent = 'Pause';
             } else {
                 pauseAudio();
+                document.getElementById('playButton').textContent = 'Play';
             }
-        }
-
-        // Перемотка вперёд
-        function seekForward() {
-            if (audio.duration > 0) {
-                audio.currentTime = Math.min(audio.currentTime + 15, audio.duration);
-                sendSeekInfo();
-            }
-        }
-
-        // Перемотка назад
-        function seekBackward() {
-            if (audio.duration > 0) {
-                audio.currentTime = Math.max(audio.currentTime - 15, 0);
-                sendSeekInfo();
-            }
-        }
-
-        // Загрузка нового аудиофайла и автоматическое воспроизведение
-        function loadAudio(url) {
-            const source = document.getElementById('audioSource');
-            source.src = url;
-            audio.load();
-            audio.play();  // Автоматически воспроизводим аудио после загрузки
-            playPauseButton.textContent = 'Pause'; // Меняем текст кнопки на "Pause"
-            console.log("Аудио загружено и воспроизводится: " + url);
         }
 
         // Отправляем состояние аудио в Unity
@@ -138,6 +104,11 @@
                 }
             });
         }
+
+        // Обновляем информацию об аудио каждые 1 секунду
+        setInterval(() => {
+            sendAudioInfo();
+        }, 1000);
 
         // Отправляем информацию о текущем времени и продолжительности в Unity
         function sendAudioInfo() {
@@ -151,19 +122,6 @@
                 }
             });
         }
-
-        // Отправляем информацию о текущем времени после перемотки
-        function sendSeekInfo() {
-            uniWebView.sendMessage({
-                path: 'seek',
-                args: {
-                    currentTime: audio.currentTime.toString()
-                }
-            });
-        }
-
-        // Обновляем информацию об аудио каждые 1 секунду
-        setInterval(sendAudioInfo, 1000);
     </script>
 </body>
 </html>
