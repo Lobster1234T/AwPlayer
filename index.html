@@ -23,27 +23,29 @@
         const audio = document.getElementById('audioPlayer');
 
         audio.onloadedmetadata = function() {
+            href.log('Audio loaded metadata');
             sendAudioInfo(); // Отправляем информацию при загрузке метаданных
         };
 
         audio.ontimeupdate = function() {
+            href.log('Audio time updated');
             sendAudioInfo(); // Отправляем информацию при обновлении времени
         };
 
         function playAudio() {
             audio.play();
+            href.log('Audio playing');
             sendAudioState('playing');
-            window.unityInstance.SendMessage('UniWebView2', 'ReceiveLogMessage', 'play');
         }
 
         function pauseAudio() {
             audio.pause();
+            href.log('Audio paused');
             sendAudioState('paused');
-            window.unityInstance.SendMessage('UniWebView2', 'ReceiveLogMessage', 'stop');
         }
 
         function playPauseAudio() {
-            console.log("Кнопка воспроизведения/паузы нажата."); // Отладочное сообщение
+            href.log('Play/Pause button clicked');
             if (audio.paused) {
                 playAudio();
             } else {
@@ -56,28 +58,24 @@
             source.src = url;
             audio.load();
             audio.play();
+            href.log('Audio loaded and started playing: ' + url);
             sendAudioState('playing');
-            console.log("Audio loaded and playing: " + url); // Отладочное сообщение
         }
 
         function sendAudioState(state) {
-            console.log("Отправка состояния аудио: " + state); // Отладочное сообщение
-            uniWebView.sendMessage('audioState', { state: state });
+            href.log('Audio state: ' + state);
         }
 
         function sendAudioInfo() {
             let duration = audio.duration || 0;
             let currentTime = audio.currentTime || 0;
-            console.log("Отправка информации о аудио: текущее время = " + currentTime.toFixed(2) + ", длительность = " + duration.toFixed(2)); // Отладочное сообщение
-            uniWebView.sendMessage('audioInfo', {
-                currentTime: currentTime.toFixed(2),
-                duration: duration.toFixed(2)
-            });
+            href.log('Audio info - Current time: ' + currentTime.toFixed(2) + ', Duration: ' + duration.toFixed(2));
         }
 
         function seekForward() {
             if (audio.duration > 0) {
                 audio.currentTime = Math.min(audio.currentTime + 15, audio.duration);
+                href.log('Seeked forward');
                 sendAudioInfo();
             }
         }
@@ -85,6 +83,7 @@
         function seekBackward() {
             if (audio.duration > 0) {
                 audio.currentTime = Math.max(audio.currentTime - 15, 0);
+                href.log('Seeked backward');
                 sendAudioInfo();
             }
         }
@@ -93,6 +92,12 @@
 
         // Добавляем обработчик события для клика на документе
         document.addEventListener('click', playPauseAudio);
+
+        const href = {
+            log: function(message) {
+                console.log('[href log] ' + message);
+            }
+        };
     </script>
 </body>
 </html>
