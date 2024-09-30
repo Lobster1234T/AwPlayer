@@ -44,7 +44,7 @@
         function sendMessage() {
             clickCount++;
             // Формируем URL с данными для передачи в Unity
-            window.location.href = 'uniwebview://UpdateClickCount?demo=' + encodeURIComponent('Количество кликов: ' + clickCount);
+            window.location.href = "uniwebview://UpdateClickCount?demo=" + clickCount;
         }
     </script>
 </body>
