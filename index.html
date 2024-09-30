@@ -21,25 +21,14 @@
 
     <script>
         const audio = document.getElementById('audioPlayer');
-        const currentTimeDisplay = document.getElementById('currentTime');
-        const durationDisplay = document.getElementById('duration');
 
         audio.onloadedmetadata = function() {
-            durationDisplay.textContent = formatTime(audio.duration);
-            sendAudioInfo();
+            sendAudioInfo(); // Отправляем информацию при загрузке метаданных
         };
 
         audio.ontimeupdate = function() {
-            sendAudioInfo(); // Убедитесь, что информация отправляется при обновлении времени
+            sendAudioInfo(); // Отправляем информацию при обновлении времени
         };
-
-        function formatTime(seconds) {
-            let minutes = Math.floor(seconds / 60);
-            let secs = Math.floor(seconds % 60);
-            if (secs < 10) secs = '0' + secs;
-            if (minutes < 10) minutes = '0' + minutes;
-            return minutes + ':' + secs;
-        }
 
         function playAudio() {
             audio.play();
@@ -59,57 +48,40 @@
             }
         }
 
+        function loadAudio(url) {
+            const source = document.getElementById('audioSource');
+            source.src = url;
+            audio.load();
+            audio.play();
+            sendAudioState('playing');
+            console.log("Audio loaded and playing: " + url);
+        }
+
+        function sendAudioState(state) {
+            uniWebView.sendMessage('audioState', { state: state }); // Убедитесь, что вы используете правильный формат
+        }
+
+        function sendAudioInfo() {
+            let duration = audio.duration || 0;
+            let currentTime = audio.currentTime || 0;
+            uniWebView.sendMessage('audioInfo', {
+                currentTime: currentTime.toFixed(2), // Убедитесь, что время отправляется с двумя знаками после запятой
+                duration: duration.toFixed(2) // Убедитесь, что длительность отправляется с двумя знаками после запятой
+            });
+        }
+
         function seekForward() {
             if (audio.duration > 0) {
                 audio.currentTime = Math.min(audio.currentTime + 15, audio.duration);
-                sendSeekInfo();
+                sendAudioInfo();
             }
         }
 
         function seekBackward() {
             if (audio.duration > 0) {
                 audio.currentTime = Math.max(audio.currentTime - 15, 0);
-                sendSeekInfo();
+                sendAudioInfo();
             }
-        }
-
-        function loadAudio(url) {
-            const source = document.getElementById('audioSource');
-            source.src = url;
-            audio.load();
-            audio.play();
-            sendAudioState('playing'); // Отправляем состояние воспроизведения
-            console.log("Audio loaded and playing: " + url);
-        }
-
-        function sendAudioState(state) {
-            uniWebView.sendMessage({
-                path: 'audioState',
-                args: {
-                    state: state
-                }
-            });
-        }
-
-        function sendAudioInfo() {
-            let duration = audio.duration || 0;
-            let currentTime = audio.currentTime || 0;
-            uniWebView.sendMessage({
-                path: 'audioInfo',
-                args: {
-                    currentTime: currentTime.toString(),
-                    duration: duration.toString()
-                }
-            });
-        }
-
-        function sendSeekInfo() {
-            uniWebView.sendMessage({
-                path: 'seek',
-                args: {
-                    currentTime: audio.currentTime.toString()
-                }
-            });
         }
 
         setInterval(sendAudioInfo, 1000); // Отправляем информацию о аудио каждую секунду
