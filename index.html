@@ -21,25 +21,14 @@
 
     <script>
         const audio = document.getElementById('audioPlayer');
-        const currentTimeDisplay = document.getElementById('currentTime');
-        const durationDisplay = document.getElementById('duration');
 
         audio.onloadedmetadata = function() {
-            durationDisplay.textContent = formatTime(audio.duration);
             sendAudioInfo();
         };
 
         audio.ontimeupdate = function() {
             sendAudioInfo(); // Убедитесь, что информация отправляется при обновлении времени
         };
-
-        function formatTime(seconds) {
-            let minutes = Math.floor(seconds / 60);
-            let secs = Math.floor(seconds % 60);
-            if (secs < 10) secs = '0' + secs;
-            if (minutes < 10) minutes = '0' + minutes;
-            return minutes + ':' + secs;
-        }
 
         function playAudio() {
             audio.play();
@@ -116,6 +105,16 @@
 
         // Добавляем обработчик события для клика на документе
         document.addEventListener('click', playPauseAudio);
+
+        // Добавляем обработчики для перемотки
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight') { // Если нажата стрелка вправо
+                seekForward();
+            }
+            if (event.key === 'ArrowLeft') { // Если нажата стрелка влево
+                seekBackward();
+            }
+        });
     </script>
 </body>
 </html>
