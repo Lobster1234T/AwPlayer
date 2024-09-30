@@ -3,18 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Audio Player</title>
-    <style>
-        body {
-            background-color: rgba(0, 0, 0, 0); /* Полностью прозрачный фон */
-            color: transparent; /* Скрыть текст */
-            margin: 0; /* Убираем отступы */
-            padding: 0; /* Убираем внутренние отступы */
-            cursor: pointer; /* Изменяем курсор на указатель */
-            overflow: hidden; /* Убираем прокрутку, если есть */
-        }
-    </style>
+
 </head>
 <body>
+    style="background-color: transparent"
+
     <audio id="audioPlayer">
         <source id="audioSource" src="https://krutov89bk.online/kolibelnie/stories/20.Sneaky%20Hyena%20and%20the%20Teachers'%20Day%20Camp.mp3" type="audio/mpeg">
     </audio>
@@ -111,6 +104,10 @@
                 }
             });
         }
+
+body {
+  background-color: transparent;
+}
 
         setInterval(sendAudioInfo, 1000); // Отправляем информацию о аудио каждую секунду
 
