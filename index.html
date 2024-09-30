@@ -1,26 +1,32 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>UniWebView TextMeshPro Demo</title>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sendButton = document.getElementById('sendMessageButton');
-            sendButton.addEventListener('click', function() {
-                // Отправляем сообщение в Unity
-                window.uniWebView.sendMessage({
-                    path: 'messageFromHTML',
-                    args: {
-                        message: 'Hello from HTML!'
-                    }
-                });
-            });
-        });
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        button {
+            width: 150pt; /* Ширина кнопки */
+            height: 40pt; /* Высота кнопки */
+        }
+    </style>
 </head>
-<body>
-    <h1>UniWebView Demo</h1>
-    <button id="sendMessageButton">Send Message</button>
+<body onload="prepareGame()">
+    <button id="clickButton" onclick="handleClick()">Click Me!</button>
+    <p id="clickCount">Clicks: 0</p> <!-- Текст для отображения количества нажатий -->
+
+    <script>
+        let clickCount = 0; // Переменная для хранения количества нажатий
+
+        function handleClick() {
+            clickCount++; // Увеличиваем счетчик нажатий
+            document.getElementById("clickCount").innerText = "Clicks: " + clickCount; // Обновляем текст на странице
+            sendCountToUnity(); // Отправляем количество нажатий в Unity
+        }
+
+        function sendCountToUnity() {
+            if (window.Unity && Unity.call) {
+                Unity.call("UpdateClickCount", clickCount); // Отправляем количество нажатий в Unity
+            }
+        }
+    </script>
 </body>
 </html>
