@@ -22,6 +22,8 @@
     <a href="javascript:playAudio()">playAudio</a>
     <a href="javascript:pauseAudio()">pauseAudio</a>
 
+     <a href="myscheme://action">Click Me</a>
+
     <script>
         const audio = document.getElementById('audioPlayer');
         const currentTimeDisplay = document.getElementById('currentTime');
@@ -47,11 +49,15 @@
         function playAudio() {
             audio.play();
             sendAudioState('playing');
+            "play"
+            'play'
         }
 
         function pauseAudio() {
             audio.pause();
             sendAudioState('paused');
+            "paused"
+            'paused'
         }
 
         function playPauseAudio() {
