@@ -2,16 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ToadCast Demo</title>
+    <title>UniWebView TextMeshPro Demo</title>
     <script>
-        function sendMessageToUnity(message) {
-            // Отправляем сообщение в Unity через ToadCast
-            window.toadCast.send(message);
+        function sendMessageToUnity() {
+            // Отправляем сообщение в Unity
+            window.uniWebView.sendMessage({
+                path: 'messageFromHTML',
+                args: {
+                    message: 'Hello from HTML!'
+                }
+            });
         }
     </script>
 </head>
 <body>
-    <h1>ToadCast Demo</h1>
-    <button onclick="sendMessageToUnity('Hello from HTML!')">Send Message</button>
+    <h1>UniWebView Demo</h1>
+    <button onclick="sendMessageToUnity()">Send Message</button>
 </body>
 </html>
