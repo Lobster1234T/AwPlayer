@@ -25,7 +25,7 @@
             background-color: #666;
         }
         #audioPlayer {
-            display: none; /* Hide the default audio player */
+            display: none; /* Скрываем стандартный аудиоплеер */
         }
     </style>
 </head>
@@ -36,35 +36,30 @@
         Your browser does not support the audio element.
     </audio>
     
-    <!-- Custom Control Buttons -->
-    <div>
-        <button class="button" onclick="seekBackward()">&#9664;&#9664;</button>
-        <button class="button" onclick="playPauseAudio()" id="playPauseButton">Play</button>
-        <button class="button" onclick="seekForward()">&#9654;&#9654;</button>
-    </div>
+    <!-- Убрана кнопка Play -->
     
-    <!-- Display current time and duration -->
+    <!-- Отображение текущего времени и продолжительности -->
     <div style="margin-top: 20px;">
         <span id="currentTime">00:00</span> / <span id="duration">00:00</span>
     </div>
     
     <script>
         const audio = document.getElementById('audioPlayer');
-        const playPauseButton = document.getElementById('playPauseButton');
         const currentTimeDisplay = document.getElementById('currentTime');
         const durationDisplay = document.getElementById('duration');
 
-        // Load audio metadata to get duration
+        // Загрузка метаданных аудио
         audio.onloadedmetadata = function() {
             durationDisplay.textContent = formatTime(audio.duration);
             sendAudioInfo();
         };
 
-        // Update current time display
+        // Обновляем текущее время
         audio.ontimeupdate = function() {
             currentTimeDisplay.textContent = formatTime(audio.currentTime);
         };
 
+        // Форматирование времени
         function formatTime(seconds) {
             let minutes = Math.floor(seconds / 60);
             let secs = Math.floor(seconds % 60);
@@ -73,54 +68,19 @@
             return minutes + ':' + secs;
         }
 
-        // Play audio
+        // Функция для запуска воспроизведения из Unity
         function playAudio() {
             audio.play();
-            playPauseButton.textContent = 'Pause';
             sendAudioState('playing');
         }
 
-        // Pause audio
+        // Остановка воспроизведения
         function pauseAudio() {
             audio.pause();
-            playPauseButton.textContent = 'Play';
             sendAudioState('paused');
         }
 
-        // Play or pause audio (used by the button)
-        function playPauseAudio() {
-            if (audio.paused) {
-                playAudio();
-            } else {
-                pauseAudio();
-            }
-        }
-
-        // Seek forward
-        function seekForward() {
-            if (audio.duration > 0) {
-                audio.currentTime = Math.min(audio.currentTime + 15, audio.duration);
-                sendSeekInfo();
-            }
-        }
-
-        // Seek backward
-        function seekBackward() {
-            if (audio.duration > 0) {
-                audio.currentTime = Math.max(audio.currentTime - 15, 0);
-                sendSeekInfo();
-            }
-        }
-
-        // Load new audio file
-        function loadAudio(url) {
-            const source = document.getElementById('audioSource');
-            source.src = url;
-            audio.load();
-            console.log("Audio loaded with URL: " + url);
-        }
-
-        // Send audio state to Unity
+        // Отправка статуса аудио в Unity
         function sendAudioState(state) {
             uniWebView.sendMessage({
                 path: 'audioState',
@@ -130,7 +90,7 @@
             });
         }
 
-        // Send current time and duration to Unity
+        // Отправка текущего времени и продолжительности в Unity
         function sendAudioInfo() {
             let duration = audio.duration || 0;
             let currentTime = audio.currentTime || 0;
@@ -143,17 +103,7 @@
             });
         }
 
-        // Send seek info to Unity
-        function sendSeekInfo() {
-            uniWebView.sendMessage({
-                path: 'seek',
-                args: {
-                    currentTime: audio.currentTime.toString()
-                }
-            });
-        }
-
-        // Update audio info every second
+        // Обновление информации каждую секунду
         setInterval(sendAudioInfo, 1000);
     </script>
 </body>
