@@ -55,15 +55,17 @@
             }
         }
         
+
         function getTime(){
+
             let getTime = audio.currentTime;
-            window.location.href = "uniwebview://audio?time=" + getTime;
+            window.location.href = "uniwebview://audio?time=" + getTime.toString();
 
         }
 
         function getfulltime(){
             let dur = audio.duration;
-            window.location.href = "uniwebview://audio?full=" + audio.dur;
+            window.location.href = "uniwebview://audio?full=" + dur.toString();
         }
 
 
