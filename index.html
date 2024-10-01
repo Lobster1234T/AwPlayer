@@ -23,7 +23,6 @@
     <script>
         const audio = document.getElementById('audioPlayer');
 
-        
         function playPauseAudio() {
             if (audio.paused) {
                 playAudio();
@@ -35,6 +34,7 @@
         function playAudio() {
             audio.play();
             window.location.href = `uniwebview://audio?state=1`; // Воспроизведение
+           
         }
 
         function pauseAudio() {
@@ -55,26 +55,17 @@
                 sendSeekInfo();
             }
         }
-        
-        let time = 0;
-        let duration = 0;
-    
-        function getTime(){
-
-            time = audio.currentTime;
-        }
 
         function getDuration() {
-            duration = audio.duration;
+            let duration = audio.duration;
             window.location.href = `uniwebview://audio?duration=${duration}`;
         }
 
         function getCurrentTime() {
-            time = audio.currentTime;
+            let time = audio.currentTime;
             window.location.href = `uniwebview://audio?time=${time}`;
         }
 
-        
         document.addEventListener('click', playPauseAudio);
     </script>
 </body>
