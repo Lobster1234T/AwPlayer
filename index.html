@@ -59,7 +59,6 @@
         let duration = 0;
     
         function getTime(){
-
             time = audio.currentTime;
         }
 
@@ -69,14 +68,12 @@
         }
 
         function getCurrentTime(){
-            time = audio.duration;
+            time = audio.currentTime;
             window.location.href = `uniwebview://audio?current=${time}`;
         }
 
-        
         setInterval(getTime, 1000); // Запускает getTime() каждую секунду
-        setInterval(getfulltime, 1000); // Запускает getfulltime() каждую секунду
-
+        setInterval(getDuration, 1000); // Запускает getDuration() каждую секунду
         
         document.addEventListener('click', playPauseAudio);
     </script>
