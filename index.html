@@ -57,17 +57,12 @@
             }
         }
 
-        let duration = 0;
-        let time = 0;
-
         function getDuration() {
-            duration = duration + 1;
-            window.location.href = `uniwebview://audio?duration=${duration}`;
+            window.location.href = `uniwebview://audio?duration=${audio.duration}`;
         }
 
         function getCurrentTime() {
-            time = time + 1;
-            window.location.href = `uniwebview://audio?time=${time}`;
+            window.location.href = `uniwebview://audio?current=${audio.audio.currentTime}`;
         }
 
         document.addEventListener('click', playPauseAudio);
