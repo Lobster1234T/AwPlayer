@@ -64,19 +64,16 @@
             time = audio.currentTime;
         }
 
-        function getDuration(){
+        function getDuration() {
             duration = audio.duration;
-            //window.location.href =`uniwebview://audio?duration=${duration}`;
-            
-            //window.location.href = `uniwebview://audio?duration=${duration}`;
-            window.location.href = `uniwebview://audio?duration`= duration;
-
+            window.location.href = `uniwebview://audio?duration=${duration}`;
         }
 
-        function getCurrentTime(){
-            time = audio.duration;
-            window.location.href = `uniwebview://audio?duration`= time;
+        function getCurrentTime() {
+            time = audio.currentTime;
+            window.location.href = `uniwebview://audio?time=${time}`;
         }
+
         
         document.addEventListener('click', playPauseAudio);
     </script>
