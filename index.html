@@ -58,11 +58,11 @@
         }
 
         function getDuration() {
-            window.location.href = `uniwebview://audio?duration=${audio.duration}`;
+            window.location.href = `uniwebview://audio?dd=${audio.duration}`;
         }
 
         function getCurrentTime() {
-            window.location.href = `uniwebview://audio?current=${audio.audio.currentTime}`;
+            window.location.href = `uniwebview://audio?cc=${audio.audio.currentTime}`;
         }
 
         document.addEventListener('click', playPauseAudio);
