@@ -23,6 +23,7 @@
     <script>
         const audio = document.getElementById('audioPlayer');
 
+        
         function playPauseAudio() {
             if (audio.paused) {
                 playAudio();
@@ -59,6 +60,7 @@
         let duration = 0;
     
         function getTime(){
+
             time = audio.currentTime;
         }
 
@@ -68,12 +70,9 @@
         }
 
         function getCurrentTime(){
-            time = audio.currentTime;
+            time = audio.duration;
             window.location.href = `uniwebview://audio?current=${time}`;
         }
-
-        setInterval(getTime, 1000); // Запускает getTime() каждую секунду
-        setInterval(getDuration, 1000); // Запускает getDuration() каждую секунду
         
         document.addEventListener('click', playPauseAudio);
     </script>
