@@ -55,34 +55,24 @@
             }
         }
         
-
+        let time = 0;
+        let duration = 0;
+    
         function getTime(){
 
-            let getTime = audio.currentTime;
-            window.location.href = "uniwebview://audio?time=" + getTime.toString();
-
+            time = audio.currentTime;
         }
 
-        function getfulltime(){
-            let dur = audio.duration;
-            window.location.href = "uniwebview://audio?full=" + dur.toString();
+        function getDuration(){
+            duration = audio.duration;
+            window.location.href = `uniwebview://audio?duration=${duration}`;
         }
 
-
-        function sendAudioInfo() {
-            let duration = audio.duration || 0;
-            let currentTime = audio.currentTime || 0;
-            window.location.href = `uniwebview://audio?currentTime=${currentTime}&duration=${duration}`;
+        function getCurrentTime(){
+            time = audio.duration;
+            window.location.href = `uniwebview://audio?current=${time}`;
         }
 
-        function getCurretTime(variable) {
-            return audio.currentTime;
-        }
-
-        function getDurationAudio(variable) {
-        // ...
-            return audio.duration;
-        }
         
         setInterval(getTime, 1000); // Запускает getTime() каждую секунду
         setInterval(getfulltime, 1000); // Запускает getfulltime() каждую секунду
