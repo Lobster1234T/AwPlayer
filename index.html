@@ -69,6 +69,12 @@
         }
 
 
+        function sendAudioInfo() {
+            let duration = audio.duration || 0;
+            let currentTime = audio.currentTime || 0;
+            window.location.href = `uniwebview://audio?currentTime=${currentTime}&duration=${duration}`;
+        }
+
         function getCurretTime(variable) {
             return audio.currentTime;
         }
