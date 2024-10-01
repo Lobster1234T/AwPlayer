@@ -56,13 +56,16 @@
             }
         }
 
+        let duration = 0;
+        let time = 0;
+
         function getDuration() {
-            let duration = audio.duration;
+            duration = duration + 1;
             window.location.href = `uniwebview://audio?duration=${duration}`;
         }
 
         function getCurrentTime() {
-            let time = audio.currentTime;
+            time = time + 1;
             window.location.href = `uniwebview://audio?time=${time}`;
         }
 
